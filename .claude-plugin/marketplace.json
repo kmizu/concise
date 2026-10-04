@@ -1,14 +1,15 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
-  "name": "i-have-adhd",
-  "description": "Shape Claude Code output for an ADHD reader. Action-first, numbered steps, no tangents.",
+  "name": "concise",
+  "description": "Structured, concise answers from Claude Code. Answer first, steps numbered, nothing to scroll past.",
   "owner": {
-    "name": "Ayoub G."
+    "name": "Kota Mizushima",
+    "url": "https://github.com/kmizu"
   },
   "plugins": [
     {
-      "name": "i-have-adhd",
-      "description": "Action-first, ADHD-friendly output shaping for Claude Code.",
+      "name": "concise",
+      "description": "Structured, concise output shaping for Claude Code: /concise, /concise:off, /concise:always-on, /concise:always-off, /concise:status.",
       "source": "./",
       "category": "productivity"
     }

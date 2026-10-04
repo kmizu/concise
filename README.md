@@ -1,106 +1,134 @@
 <p align="center">
-  <img src="./logo.png" alt="i-have-adhd" width="140" />
+  <img src="logo.svg" alt="concise" width="120" />
+</p>
+<h1 align="center">concise</h1>
+<p align="center">
+  <strong>Structured, concise answers from Claude Code.</strong><br/>
+  Answer first. Steps numbered. Nothing to scroll past.
 </p>
 <p align="center">
-  <strong align="center">ADHD-friendly outputs. No ADHD diagnosis needed!</strong>
+  <sub>A fork of <a href="https://github.com/ayghri/i-have-adhd">i-have-adhd</a>, generalized for anyone who wants concise output.</sub>
 </p>
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/ayghri/i-have-adhd?style=flat" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/kmizu/concise-plugin?style=flat" alt="License"></a>
+  <img src="https://img.shields.io/badge/claude%20code-plugin-0F172A?style=flat" alt="Claude Code plugin">
 </p>
-
-<p align="center">
-  <strong title="English" aria-label="English">🇬🇧</strong> ·
-  <a href=".github/readme/README.zh-CN.md" title="简体中文" aria-label="简体中文">🇨🇳</a> ·
-  <a href=".github/readme/README.es.md" title="Español" aria-label="Español">🇪🇸</a> ·
-  <a href=".github/readme/README.pt-BR.md" title="Português (Brasil)" aria-label="Português (Brasil)">🇧🇷</a> ·
-  <a href=".github/readme/README.ja.md" title="日本語" aria-label="日本語">🇯🇵</a> ·
-  <a href=".github/readme/README.vi.md" title="Tiếng Việt" aria-label="Tiếng Việt">🇻🇳</a> ·
-  <a href=".github/readme/README.ko.md" title="한국어" aria-label="한국어">🇰🇷</a> ·
-  <a href=".github/readme/README.fa.md" title="فارسی" aria-label="فارسی">🇮🇷</a> ·
-  <a href=".github/readme/README.th.md" title="ภาษาไทย" aria-label="ภาษาไทย">🇹🇭</a> ·
-  <a href=".github/readme/README.ar.md" title="العربية" aria-label="العربية">🇸🇦</a>
-</p>
-
 
 ## Install
 
-Copy/paste into your CLI prompt:
-
-```text
-Install the i-have-adhd skill/plugin from https://github.com/ayghri/i-have-adhd, refer to the repo's AGENTS.md for instructions.
+```bash
+claude plugin marketplace add kmizu/concise-plugin
+claude plugin install concise@concise
 ```
 
-Or 🔗 [check the installation instructions](INSTALL.md).
+Then, inside Claude Code: `/concise`.
 
-## What it does
+## Commands
 
-A skill for your coding assistant that stops it from burying the answer. Action first. Steps numbered. No "Hope this helps!"
+| Command | Scope | What it does |
+| --- | --- | --- |
+| `/concise` | This session | Apply the ruleset to every response until you turn it off |
+| `/concise:off` | This session | Back to Claude's default style |
+| `/concise:always-on` | Every session | Load the ruleset at session start, no command needed |
+| `/concise:always-off` | Every session | Undo always-on; the current session is unchanged |
+| `/concise:status` | | Is always-on enabled, and where the flag file lives |
 
-[Kacper Rutkiewicz | AI Made Simple](https://youtu.be/NEl8kPWZP_Y) has made a good breakdown of an earlier version of the skill.
+Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_DIR/.concise-always` if you set one). Installing the plugin writes nothing. `/concise:always-on` writes that one file, `/concise:always-off` deletes it. Saying "stop concise mode" does the same as `/concise:off`.
+
 ## What changes
-
 
 <table>
 <tr>
 <td width="50%">
 
-## Before
+**Before**
 
-> Great question! Let me think about this. Your auth flow has a few moving pieces: the middleware, the token verification, and the cookie handling. Looking at `src/auth.ts`, the `verifyToken` function (around lines 42-58) seems to be using an older `jsonwebtoken` API. One approach would be to update the package and rewrite that function. After making the change, you'd want to run the auth tests to confirm nothing breaks. By the way, you might also want to look at your dependency versions overall. Hope this helps! Let me know if you want to dig deeper.
+> Great question! Docker build performance can depend on a lot of factors. Looking at your Dockerfile, I notice that you're copying the entire project directory before running `npm ci`, which means that any change to any file invalidates the layer cache and forces a full reinstall of dependencies. One approach would be to copy `package.json` and `package-lock.json` first, run the install, and then copy the rest. You might also want to add a `.dockerignore` file to exclude `node_modules` and other large directories. Hope this helps! Let me know if you'd like me to make these changes.
 
 </td>
-
 <td width="50%">
 
-## After
+**After**
 
-> Run `npm install jsonwebtoken@latest`, then edit `src/auth.ts:42`.
+> Move `COPY . .` below `RUN npm ci` so the dependency layer caches (`Dockerfile:6`).
 >
-> 1. Open `src/auth.ts`
-> 2. Replace `verifyToken` (lines 42–58) with the snippet below
-> 3. Run `npm test -- auth.spec.ts`
+> 1. Add `COPY package*.json ./` before `RUN npm ci`
+> 2. Move `COPY . .` after it
+> 3. Rebuild: `docker build .` (the second build skips `npm ci`)
 >
-> Next: paste the first failing line if any test fails.
+> Separately: no `.dockerignore`, so `node_modules` is sent to the daemon. Want that next?
 
 </td>
 </tr>
 </table>
 
+## The shape
+
+Every response follows the same order. A part appears only when it carries information.
+
+| Part | Content |
+| --- | --- |
+| **Lead** | The answer, command, path, or next action. The first line. |
+| **Steps** | Numbered, one bounded action per item |
+| **Detail** | Only what is needed to trust the lead: code blocks for anything runnable, tables for comparisons |
+| **State** | `Done: X. Next: Y.` |
+
+Target: one terminal screen. Longer only when you ask to be walked through something.
 
 ## The rules
 
-10 rules. Full text in [SKILL.md](./skills/i-have-adhd/SKILL.md).
+Ten rules. Full text with good/bad examples in [SKILL.md](skills/concise/SKILL.md).
 
-1. Lead with the next action.
-2. Number multi-step tasks.
-3. End with one concrete next step.
-4. Suppress tangents.
+1. Lead with the answer.
+2. Number multi-step work.
+3. End with one next action.
+4. One topic per response.
 5. Restate state every turn.
-6. Specific time estimates (minutes, not "a bit").
-7. Make wins visible.
-8. Matter-of-fact errors.
-9. Cap lists to 5 items.
-10. No preamble. No recap. No closers.
+6. Estimates in concrete units.
+7. Show results, not effort.
+8. Errors: location, cause, fix.
+9. Cap lists at five.
+10. No preamble, no recap, no closers.
 
-## Tune it
+Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
 
-Fork, edit `skills/i-have-adhd/SKILL.md`, then swap your copy in:
+## How it works
+
+| File | Role |
+| --- | --- |
+| `skills/concise/SKILL.md` | The ruleset. `/concise` loads it into the session. |
+| `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
+| `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
+| `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
+
+Needs Node.js on `PATH` for the hook and the `always-*` commands. Without it the hook fails silently and `/concise` still works per session.
+
+## Customize
+
+Fork, edit `skills/concise/SKILL.md`, then point Claude Code at your fork:
 
 ```bash
-claude plugin uninstall i-have-adhd            # drop the upstream copy first:
-claude plugin marketplace remove i-have-adhd   # fork and upstream share both names
-claude plugin marketplace add <your-username>/i-have-adhd
-claude plugin install i-have-adhd@i-have-adhd
+claude plugin uninstall concise
+claude plugin marketplace remove concise
+claude plugin marketplace add <you>/<your-fork>
+claude plugin install concise@concise
 ```
 
-Restart your coding assistant, then re-invoke `/i-have-adhd`.
+Restart Claude Code, then `/concise`.
 
-## Credits
+## Development
 
-Loosely based on *The Adult ADHD Tool Kit* by J. Russell Ramsay and Anthony L. Rostain. Adapted for how an LLM should respond, not how a human should organize their day.
+```bash
+python -m unittest discover -s tests -v   # hook + flag script tests (needs node)
+claude plugin validate .                  # manifest check
+```
+
+CI installs the plugin from the checkout into a scratch `CLAUDE_CONFIG_DIR` and fails unless `claude plugin list` reports it enabled.
+
+## Acknowledgements
+
+concise is a fork of [i-have-adhd](https://github.com/ayghri/i-have-adhd) by [Ayoub Ghriss](https://github.com/ayghri). The ten rules descend from that work, with thanks. They help any reader, so this fork generalizes them: it is for anyone who wants concise, structured output, whatever the reason. It also narrows the scope to Claude Code and adds the response shape and the command set. For the original, with adapters for a dozen other runtimes and translations in ten languages, use i-have-adhd.
 
 ## License
 
-[MIT](LICENSE).
-
-Star ⭐ if it saved you one scroll past one "Great question!"
+[MIT](LICENSE). Original work © Ayoub Ghriss. Modifications © Kota Mizushima.

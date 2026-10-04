@@ -1,21 +1,23 @@
 name: plugin loads in Claude Code
 
-# Installs the plugin from this checkout into a scratch CLAUDE_CONFIG_DIR and
-# fails if it does not reach "enabled". Catches load-layer breakage that
-# schema validation misses, e.g. the duplicate hooks declaration in #61.
+# Runs the hook and flag-script tests on Ubuntu and Windows, then installs the
+# plugin from this checkout into a scratch CLAUDE_CONFIG_DIR and fails if it
+# does not reach "enabled". Catches load-layer breakage that schema validation
+# misses.
 on:
   pull_request:
     paths:
       - .claude-plugin/**
+      - commands/**
       - hooks/**
       - skills/**
-      - tests/test_always_on_hooks.py
+      - tests/**
       - .github/workflows/plugin-load-check.yml
   push:
     branches: [main]
 
 jobs:
-  hook-parity:
+  tests:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -25,8 +27,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: Test native hook implementations
-        run: python -m unittest tests.test_always_on_hooks -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test the hook and the flag script
+        run: python -m unittest discover -s tests -v
 
   load:
     runs-on: ubuntu-latest
@@ -34,12 +39,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
+      - name: Validate manifests
+        run: claude plugin validate .
       - name: Install the plugin from this checkout into a scratch config
         run: |
           export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/claude-scratch"
           mkdir -p "$CLAUDE_CONFIG_DIR"
           claude plugin marketplace add "$GITHUB_WORKSPACE"
-          claude plugin install i-have-adhd@i-have-adhd
+          claude plugin install concise@concise
           claude plugin list | tee plugin-list.txt
           grep -q "✔ enabled" plugin-list.txt || {
             echo "::error::plugin failed to load; see claude plugin list output above"

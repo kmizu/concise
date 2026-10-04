@@ -1,9 +1,19 @@
 {
-  "name": "i-have-adhd",
-  "version": "0.3.0",
-  "description": "Shape Claude Code output for an ADHD reader: lead with the next action, number steps, suppress tangents, restate state, make wins visible.",
+  "name": "concise",
+  "version": "0.1.0",
+  "description": "Structured, concise answers from Claude Code: the answer first, numbered steps, one screen, state restated every turn, no preamble or closers.",
   "author": {
-    "name": "Ayoub G.",
-    "url": "https://github.com/ayghri"
-  }
+    "name": "Kota Mizushima",
+    "url": "https://github.com/kmizu"
+  },
+  "homepage": "https://github.com/kmizu/concise-plugin",
+  "repository": "https://github.com/kmizu/concise-plugin",
+  "license": "MIT",
+  "keywords": [
+    "concise",
+    "output-style",
+    "structured-output",
+    "productivity",
+    "claude-code"
+  ]
 }
