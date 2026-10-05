@@ -76,7 +76,7 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.assertIn("CONCISE MODE ACTIVE (always-on)", result.stdout)
         self.assertIn("/concise:off", result.stdout)
         self.assertIn(str(self.flag), result.stdout)
-        self.assertIn("(rules", result.stdout)
+        self.assertIn("[rules]{", result.stdout)
         self.assertNotIn("Derived from", result.stdout)
         self.assertNotIn("disable-model-invocation", result.stdout)
 
@@ -87,7 +87,7 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.flag.touch()
         result = self.run_hook()
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertIn("(pre-send-check", result.stdout)
+        self.assertIn("[pre-send-check]{", result.stdout)
         self.assertLess(len(result.stdout.encode("utf8")), 10_000)
 
     def test_hook_strips_frontmatter_with_trailing_whitespace(self):
@@ -147,31 +147,28 @@ class AlwaysOnHookTest(unittest.TestCase):
 
 
 class RulesetSyntaxTest(unittest.TestCase):
-    """skills/concise/SKILL.md holds the ruleset as one balanced S-expression."""
+    """skills/concise/SKILL.md holds the ruleset in bracket notation:
+    [tag attrs]{body}, no closing tags, [txt]{...} for literal text."""
 
-    def test_ruleset_s_expression_is_balanced(self):
+    def ruleset(self):
         text = (ROOT / "skills" / "concise" / "SKILL.md").read_text(encoding="utf8")
-        self.assertEqual(1, text.count("```lisp"))
-        code = text.split("```lisp", 1)[1].split("```", 1)[0]
-        depth, in_string, escaped = 0, False, False
-        for char in code:
-            if in_string:
-                if escaped:
-                    escaped = False
-                elif char == "\\":
-                    escaped = True
-                elif char == '"':
-                    in_string = False
-            elif char == '"':
-                in_string = True
-            elif char == "(":
+        self.assertEqual(1, text.count("```text"))
+        return text.split("```text", 1)[1].rsplit("```", 1)[0]
+
+    def test_ruleset_braces_are_balanced(self):
+        depth = 0
+        for char in self.ruleset():
+            if char == "{":
                 depth += 1
-            elif char == ")":
+            elif char == "}":
                 depth -= 1
-                self.assertGreaterEqual(depth, 0, "unmatched closing parenthesis")
-        self.assertFalse(in_string, "unterminated string")
-        self.assertEqual(0, depth, "unclosed parenthesis")
-        self.assertEqual(10, code.count("(rule "))
+                self.assertGreaterEqual(depth, 0, "unmatched closing brace")
+        self.assertEqual(0, depth, "unclosed brace")
+
+    def test_ruleset_has_ten_rules_and_one_root(self):
+        code = self.ruleset()
+        self.assertEqual(10, code.count("[rule "))
+        self.assertTrue(code.strip().startswith("[ruleset concise]{"))
 
 
 if __name__ == "__main__":

@@ -120,7 +120,7 @@ The rules change presentation only, never how much analysis or work gets done. T
 
 | File | Role |
 | --- | --- |
-| `skills/concise/SKILL.md` | The ruleset, written as an S-expression so it is short and unambiguous. `/concise` loads it into the session. |
+| `skills/concise/SKILL.md` | The ruleset, written in a small bracket notation (`[tag attrs]{body}`) so it is short and unambiguous. `/concise` loads it into the session. |
 | `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
 | `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
 | `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
