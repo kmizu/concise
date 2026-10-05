@@ -44,7 +44,7 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## What changes
 
-The same prompt, answered without and with the plugin. Real output from `claude -p` with no user settings, concise 0.3.1 always-on, generated on 2026-10-05. One run each, unedited except that headers inside an answer are shown as bold lines.
+The same prompt, answered without and with concise.
 
 ### A fix
 
@@ -307,6 +307,8 @@ Use absolute paths in cron. Cron runs with a minimal environment, so point it at
 </td>
 </tr>
 </table>
+
+<sub>Real output, one run each. Headers inside an answer are shown as bold lines.</sub>
 
 ## The shape
 
