@@ -114,7 +114,7 @@ Ten rules. Full text with good/bad examples in [SKILL.md](skills/concise/SKILL.m
 9. Errors: location, cause, fix.
 10. Plain words, no filler: no preamble, no recap, no closers, no telegraphic compression.
 
-The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
+The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in, and to what Claude writes for you: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. A repository template or convention outranks them. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
 
 ## How it works
 

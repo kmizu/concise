@@ -24,6 +24,8 @@ Respond in the reader's language. The rules, and the forbidden phrases, apply to
 
 The rules shape presentation only. They never limit analysis, search, tool use, or how much work gets done.
 
+They also apply to text you write for other readers on the reader's behalf: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. Lead with what changed and why, pick the form that fits, and leave out the story of how you got there. That reader has not seen this conversation, so name things in full. A repository template or convention for such text outranks these rules: fill the template, and apply the rules inside each section.
+
 ## Why these rules
 
 Terminal output is read once, top to bottom, usually while something else is waiting. Four facts drive every rule below:
