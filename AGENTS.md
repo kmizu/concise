@@ -24,7 +24,7 @@ Do not read secrets, home-directory configuration, or local runtime caches. Run 
 
 ## Rules of the repository
 
-- `skills/concise/SKILL.md` holds the ruleset as one S-expression in a `lisp` code block. Keep it balanced and keep natural-language text in quoted strings.
+- `skills/concise/SKILL.md` holds the ruleset in bracket notation inside a `text` code block: `[tag attrs]{body}`, no closing tags, `[txt]{...}` for literal text. Keep braces balanced.
 - Behavior changes go in `skills/concise/SKILL.md`. Commands and hooks only load or toggle it; they do not restate the rules.
 - Nothing in this repository writes outside the repository except `hooks/always-on-flag.mjs`, and only to the one flag file, and only when the user runs `/concise:always-on`. Keep it that way.
 - Hooks must stay fast, offline, and fail-safe. A broken hook must never block session start.
