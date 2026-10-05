@@ -142,6 +142,89 @@ The reordering alone should bring rebuilds after a code change down from minutes
 
 The fix moves to the first line, the reason follows it, and three optional extras shrink to one short paragraph. Across three runs each, answers were 209 to 282 words without the plugin and 134 to 148 words with it. That is one prompt and a small sample, so read it as an illustration.
 
+## Examples
+
+Real answers from concise 0.3.1 always-on, generated on 2026-10-05 with `claude -p` and no user settings. Unedited, one run each.
+
+### A yes/no question
+
+Yes or no comes first, then what you need to act on it.
+
+> Can I use top-level await in an ES module on Node 20?
+
+Yes. Node 20 supports top-level `await` in ES modules without any flag. It has been stable since Node 14.8.
+
+The file has to be treated as ESM, which means either of these:
+
+1. Use the `.mjs` extension.
+2. Set `"type": "module"` in `package.json`.
+
+```js
+// index.mjs
+const res = await fetch("https://example.com");
+console.log(res.status);
+```
+
+Top-level `await` does not work in CommonJS (`.cjs` files, or `.js` files without `"type": "module"`).
+
+### A question about options
+
+Options are numbered, recommendation first, so you can reply "2".
+
+> What are my options for running a Python script every hour on a Linux server?
+
+1. **cron** (recommended for most cases): built in, one line, nothing else to install. It skips missed runs while the server is down and gives no logging unless you add it.
+   ```bash
+   crontab -e
+   # Runs at minute 0 of every hour; output is appended to a log file
+   0 * * * * /usr/bin/python3 /path/to/script.py >> /var/log/script.log 2>&1
+   ```
+2. **systemd timer**: you get logs in `journalctl`, a missed run can fire after a reboot (`Persistent=true`), and overlapping runs are prevented. You write two unit files (`.service` and `.timer`) with `OnCalendar=hourly`.
+3. **A long-running Python loop** (the `schedule` or `APScheduler` libraries): all scheduling stays in code. You have to keep the process alive yourself with systemd or supervisor, and a crash stops every future run.
+4. **A container or orchestrator scheduler** (Kubernetes CronJob, Airflow): worth it only if you already run that platform or need retries, dependencies between jobs, and a dashboard.
+
+Use absolute paths in cron. Cron runs with a minimal environment, so point it at the virtualenv interpreter directly, for example `/path/to/venv/bin/python`.
+
+### A commit message
+
+The rules also cover text written for other readers. What it could not confirm is said in one place.
+
+<details>
+<summary>The prompt</summary>
+
+````text
+Write a commit message for this diff.
+
+--- a/src/retry.ts
++++ b/src/retry.ts
+@@ -4,7 +4,8 @@ export async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+     try {
+       return await fn();
+     } catch (err) {
+-      if (i === attempts) throw err;
++      if (i === attempts - 1) throw err;
++      await sleep(2 ** i * 100);
+     }
+   }
+ }
+````
+
+</details>
+
+```
+Fix retry swallowing the final error and add backoff
+
+The loop counter runs from 0 to attempts - 1, so the check
+`i === attempts` never matched. After the last failed attempt,
+retry() returned undefined instead of throwing the error.
+It now throws on the last attempt (i === attempts - 1).
+
+Failed attempts are now followed by an exponential backoff of
+2^i * 100 ms (100 ms, 200 ms, 400 ms, ...) before the next try.
+```
+
+This assumes the loop is `for (let i = 0; i < attempts; i++)`. The diff doesn't show the loop header, so I haven't confirmed that. It also assumes `sleep` already exists in `src/retry.ts`, because the diff doesn't import it.
+
 ## The shape
 
 Concise means fewer sentences, not compressed ones. Structured means the form matches the content, not more formatting. A one-line question gets a one-line answer; a longer response is built from these parts, each present only when it carries information:
