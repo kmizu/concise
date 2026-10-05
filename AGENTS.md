@@ -17,6 +17,7 @@ Do not read secrets, home-directory configuration, or local runtime caches. Run 
 | Manifests | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Plugin metadata and the single-plugin marketplace. Keep `version` in `plugin.json` current. |
 | Skill | `skills/concise/SKILL.md` | Source of truth for the ten rules and the response shape. Invoked as `/concise`. |
 | Commands | `commands/off.md`, `always-on.md`, `always-off.md`, `status.md` | `/concise:off`, `/concise:always-on`, `/concise:always-off`, `/concise:status`. |
+| Output style | `output-styles/concise.md`, `scripts/build_output_style.py` | Generated copy of the ruleset selectable with `/output-style concise:concise`. Never edit the generated file; rebuild it after changing `SKILL.md` (`--check` runs in CI and tests). |
 | Hooks | `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook that injects the ruleset when the always-on flag exists. Fail-safe: any error exits 0. |
 | Flag script | `hooks/always-on-flag.mjs` | The only code that creates or deletes `$CLAUDE_CONFIG_DIR/.concise-always` (default `~/.claude`). |
 | Tests | `tests/` | Hook and flag-script tests. Use temp dirs; never touch the real config dir. |

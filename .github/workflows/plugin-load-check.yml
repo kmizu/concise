@@ -10,6 +10,7 @@ on:
       - .claude-plugin/**
       - commands/**
       - hooks/**
+      - output-styles/**
       - skills/**
       - tests/**
       - codex/**
@@ -37,6 +38,8 @@ jobs:
           node-version: "22"
       - name: Test the hook and the flag script
         run: python -m unittest discover -s tests -v
+      - name: Check the generated output style matches the skill
+        run: python scripts/build_output_style.py --check
 
   load:
     runs-on: ubuntu-latest

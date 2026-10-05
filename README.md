@@ -47,11 +47,28 @@ claude plugin update concise@concise
 
 Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_DIR/.concise-always` if you set one). Installing the plugin writes nothing. `/concise:always-on` writes that one file, `/concise:always-off` deletes it. Saying "stop concise mode" does the same as `/concise:off`.
 
+### Output style (per project, no hook)
+
+The same ruleset also ships as a Claude Code output style. Select it once in a
+project and it stays selected for that project:
+
+```text
+/output-style concise:concise
+```
+
+`/output-style default` turns it off. The choice is stored by Claude Code in
+`.claude/settings.local.json`; the plugin writes nothing. The style keeps
+Claude Code's own coding instructions and only changes presentation. Use it
+instead of always-on when you want the mode scoped to one project, or when
+Node.js is not available for the hook. Claude Code also has a built-in style
+named "Concise"; this one is `concise:concise`.
+
 ### How it works
 
 | File | Role |
 | --- | --- |
 | `skills/concise/SKILL.md` | The ruleset, written in a small bracket notation (`[tag attrs]{body}`) so it is short and unambiguous. `/concise` loads it into the session. |
+| `output-styles/concise.md` | The same ruleset as an output style, generated from `SKILL.md` by `scripts/build_output_style.py`; selected with `/output-style concise:concise`. |
 | `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
 | `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
 | `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
