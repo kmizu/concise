@@ -1,6 +1,6 @@
 {
   "name": "concise",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Structured, concise answers from Claude Code: answer first, length matched to the task, necessary uncertainty preserved, no filler.",
   "author": {
     "name": "Kota Mizushima",
