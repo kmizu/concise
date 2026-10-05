@@ -1,6 +1,6 @@
 {
   "name": "concise",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Structured, concise answers from Claude Code: the answer first, numbered steps, one screen, state restated every turn, no preamble or closers.",
   "author": {
     "name": "Kota Mizushima",

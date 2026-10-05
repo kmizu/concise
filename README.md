@@ -23,6 +23,13 @@ claude plugin install concise@concise
 
 Then, inside Claude Code: `/concise`.
 
+Update later with:
+
+```bash
+claude plugin marketplace update concise
+claude plugin update concise@concise
+```
+
 ## Commands
 
 | Command | Scope | What it does |
@@ -64,33 +71,50 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## The shape
 
-Every response follows the same order. A part appears only when it carries information.
+Concise means fewer sentences, not compressed ones. Structured means the form matches the content, not more formatting. A one-line question gets a one-line answer; a longer response is built from these parts, each present only when it carries information:
 
 | Part | Content |
 | --- | --- |
 | **Lead** | The answer, command, path, or next action. The first line. |
 | **Steps** | Numbered, one bounded action per item |
-| **Detail** | Only what is needed to trust the lead: code blocks for anything runnable, tables for comparisons |
-| **State** | `Done: X. Next: Y.` |
+| **Detail** | Only what is needed to act on the lead or to trust it |
+| **State** | During multi-step work: `Done: X. Next: Y.` |
 
-Target: one terminal screen. Longer only when you ask to be walked through something.
+The form follows the content:
+
+| Content | Form |
+| --- | --- |
+| Steps in order | Numbered list |
+| Choices to pick from, or items you will refer back to | Numbered list, so you can reply "2" |
+| Three or more items compared on two or more attributes | Table |
+| Parallel items with no order | Bullets, at most five per group |
+| Progress across several items | Task list (`- [x]`, `- [ ]`) |
+| Terms with meanings, fields with values | Bullets with a bold label |
+| Anything you will run or paste | Code block with a language tag |
+| A change to existing code | `diff` block, or new lines with `file:line` |
+| Logs, error output, a directory tree | Code block, verbatim and trimmed |
+| Quoted words | Blockquote |
+| A single fact, two items, or reasoning | Sentences |
+| Sections of a long explanation | Headers |
+
+Inline: code for commands, paths, and identifiers; bold for the one term you scan for; links with descriptive text. No headers on short answers, no one-item lists, no nested bullets, no italics for emphasis, no horizontal rules. The ceiling is one terminal screen, unless you ask to be walked through something.
 
 ## The rules
 
 Ten rules. Full text with good/bad examples in [SKILL.md](skills/concise/SKILL.md).
 
-1. Lead with the answer.
-2. Number multi-step work.
-3. End with one next action.
-4. One topic per response.
-5. Restate state every turn.
-6. Estimates in concrete units.
-7. Show results, not effort.
-8. Errors: location, cause, fix.
-9. Cap lists at five.
-10. No preamble, no recap, no closers.
+1. Lead with the answer. Yes/no questions get "Yes" or "No" first.
+2. Match length to the question.
+3. Pick the form that fits.
+4. Number multi-step work.
+5. One topic per response.
+6. Restate state and end with one next action, only while work is open.
+7. Use concrete numbers. Never invent one.
+8. Show results, not effort.
+9. Errors: location, cause, fix.
+10. Plain words, no filler: no preamble, no recap, no closers, no telegraphic compression.
 
-Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
+The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
 
 ## How it works
 
@@ -116,14 +140,7 @@ claude plugin install concise@concise
 
 Restart Claude Code, then `/concise`.
 
-## Development
-
-```bash
-python -m unittest discover -s tests -v   # hook + flag script tests (needs node)
-claude plugin validate .                  # manifest check
-```
-
-CI installs the plugin from the checkout into a scratch `CLAUDE_CONFIG_DIR` and fails unless `claude plugin list` reports it enabled.
+Tests and contribution rules are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Acknowledgements
 
