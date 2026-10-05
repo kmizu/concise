@@ -44,7 +44,7 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## What changes
 
-The same prompt, answered without and with the plugin. Real output from `claude -p` with no user settings, concise 0.3.1 always-on, generated on 2026-10-05. Unedited, one run each.
+The same prompt, answered without and with the plugin. Real output from `claude -p` with no user settings, concise 0.3.1 always-on, generated on 2026-10-05. One run each, unedited except that headers inside an answer are shown as bold lines.
 
 ### A fix
 
@@ -216,7 +216,7 @@ Options are numbered, recommendation first, so you can reply "2".
 
 <table>
 <tr>
-<th width="50%">Before (405 words)</th>
+<th width="50%">Before (400 words)</th>
 <th width="50%">After (175 words)</th>
 </tr>
 <tr>
@@ -224,7 +224,7 @@ Options are numbered, recommendation first, so you can reply "2".
 
 Here are the main options, roughly from most to least common.
 
-## 1. cron (simplest)
+**1. cron (simplest)**
 ```bash
 crontab -e
 ```
@@ -236,7 +236,7 @@ crontab -e
 - If you use a virtualenv, point to its interpreter: `/path/to/venv/bin/python`.
 - Downsides: no logging unless you redirect output yourself, and nothing stops two runs from overlapping. To prevent overlap, wrap the command in `flock -n /tmp/myscript.lock ...`.
 
-## 2. systemd timers (best default on modern distros)
+**2. systemd timers (best default on modern distros)**
 `/etc/systemd/system/myscript.service`:
 ```ini
 [Unit]
@@ -272,18 +272,18 @@ journalctl -u myscript.service   # view the logs
 - You also get resource limits, dependencies, and failure hooks (`OnFailure=`).
 - The trade-off is two files instead of one line.
 
-## 3. A long-running Python process with an internal scheduler
+**3. A long-running Python process with an internal scheduler**
 You can use something like `APScheduler` or `schedule`, or a simple `while True: ...; sleep(3600)` loop, and run it under systemd or supervisor.
 - This makes sense if the job needs shared in-memory state or you already have a daemon running.
 - It drifts over time and dies if the process crashes, so you need a supervisor to restart it.
 
-## 4. Heavier orchestration (only if you need it)
+**4. Heavier orchestration (only if you need it)**
 - **Airflow, Prefect, or Dagster**: for job dependencies, retries, a UI, and history.
 - **Celery beat**: if you already use Celery.
 - **Kubernetes CronJob**: if the server is part of a k8s cluster.
 - **anacron**: for machines that aren't always on. Its finest schedule is daily, so it doesn't fit hourly jobs.
 
-## Recommendation
+**Recommendation**
 - Use a **systemd timer** if this is a real production job. Built-in logging, overlap protection, and catching up on missed runs are worth the two small files.
 - Use **cron** for something quick and personal.
 
