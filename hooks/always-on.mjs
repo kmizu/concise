@@ -33,7 +33,9 @@ try {
     .replace(/(?:\r?\n)+$/, "");
 
   process.stdout.write(
-    "CONCISE MODE ACTIVE (always-on). The ruleset below applies to every response. " +
+    "CONCISE MODE ACTIVE (always-on). The user turned this on. The ruleset below is the user's " +
+      "standing instruction for how every response is written, starting with the first one. " +
+      "It replaces your default response style wherever the two differ. " +
       '/concise:off or "stop concise mode" turns it off for this session; ' +
       `/concise:always-off (or deleting ${flagPath}) turns always-on off for good.\n\n${body}\n`,
   );

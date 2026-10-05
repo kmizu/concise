@@ -44,30 +44,103 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## What changes
 
-<table>
-<tr>
-<td width="50%">
+One real question, asked twice on 2026-10-05 with `claude -p` and no user settings: once without the plugin, once with concise 0.3.1 always-on. Nothing below is edited.
 
-**Before**
+<details>
+<summary>The question</summary>
 
-> Great question! Docker build performance can depend on a lot of factors. Looking at your Dockerfile, I notice that you're copying the entire project directory before running `npm ci`, which means that any change to any file invalidates the layer cache and forces a full reinstall of dependencies. One approach would be to copy `package.json` and `package-lock.json` first, run the install, and then copy the rest. You might also want to add a `.dockerignore` file to exclude `node_modules` and other large directories. Hope this helps! Let me know if you'd like me to make these changes.
+```text
+My Docker build reinstalls every npm package whenever I change a source file, so each build takes minutes. Why, and how do I fix it? Here is my Dockerfile:
 
-</td>
-<td width="50%">
+FROM node:22-slim
+WORKDIR /app
+COPY . .
+RUN npm ci
+RUN npm run build
+CMD ["node", "dist/server.js"]
+```
 
-**After**
+</details>
 
-> Move `COPY . .` below `RUN npm ci` so the dependency layer caches (`Dockerfile:6`).
->
-> 1. Add `COPY package*.json ./` before `RUN npm ci`
-> 2. Move `COPY . .` after it
-> 3. Rebuild: `docker build .` (the second build skips `npm ci`)
->
-> Separately: no `.dockerignore`, so `node_modules` is sent to the daemon. Want that next?
+**With concise** (15 lines, 134 words):
 
-</td>
-</tr>
-</table>
+Copy `package.json` and `package-lock.json` first, run `npm ci`, and only then copy the rest of the source:
+
+```dockerfile
+FROM node:22-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+CMD ["node", "dist/server.js"]
+```
+
+The cause is Docker's layer cache. Docker reuses a layer only if that step's inputs haven't changed. Right now `COPY . .` comes before `npm ci`, so editing any source file invalidates the cache for that copy and every step after it, including the install. With the new order, `npm ci` reruns only when one of the two package files changes.
+
+Also add a `.dockerignore` that lists `node_modules` and `dist`. Without it, `COPY . .` sends your local `node_modules` into the build context, which slows the build and overwrites the modules you just installed.
+
+<details>
+<summary><strong>Without concise</strong> (54 lines, 282 words)</summary>
+
+**Why it happens:** Docker caches each instruction as a layer. A layer gets reused only if nothing it depends on has changed. `COPY . .` copies your whole project, source files included. So any source edit invalidates that layer, and every layer after it gets rebuilt too, including `RUN npm ci`.
+
+**Fix:** Copy only the dependency manifests first and install, then copy the rest:
+
+```dockerfile
+FROM node:22-slim
+WORKDIR /app
+
+# Only changes to these files invalidate the install layer
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Source changes only invalidate layers from here down
+COPY . .
+RUN npm run build
+
+CMD ["node", "dist/server.js"]
+```
+
+Now `npm ci` reruns only when `package.json` or `package-lock.json` changes. Ordinary code edits reuse the cached `node_modules` layer.
+
+**Also add a `.dockerignore`.** Without one, `COPY . .` sends your local `node_modules` into the image, where it can overwrite the clean install. It also sends files like `.git`, which change often and break the cache for no reason:
+
+```
+node_modules
+dist
+.git
+npm-debug.log
+```
+
+**Optional improvements:**
+
+- **Cache mount:** Even when the lockfile changes, this lets npm reuse its download cache instead of fetching everything again (needs BuildKit, which is the default in current Docker):
+  ```dockerfile
+  RUN --mount=type=cache,target=/root/.npm npm ci
+  ```
+- **Multi-stage build:** This keeps devDependencies and build tools out of the final image:
+  ```dockerfile
+  FROM node:22-slim AS build
+  WORKDIR /app
+  COPY package.json package-lock.json ./
+  RUN npm ci
+  COPY . .
+  RUN npm run build
+
+  FROM node:22-slim
+  WORKDIR /app
+  COPY package.json package-lock.json ./
+  RUN npm ci --omit=dev
+  COPY --from=build /app/dist ./dist
+  CMD ["node", "dist/server.js"]
+  ```
+
+The reordering alone should bring rebuilds after a code change down from minutes to roughly the time `npm run build` takes.
+
+</details>
+
+The fix moves to the first line, the reason follows it, and three optional extras shrink to one short paragraph. Across three runs each, answers were 209 to 282 words without the plugin and 134 to 148 words with it. That is one prompt and a small sample, so read it as an illustration.
 
 ## The shape
 
