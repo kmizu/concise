@@ -44,186 +44,30 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## What changes
 
-One real question, asked twice on 2026-10-05 with `claude -p` and no user settings: once without the plugin, once with concise 0.3.1 always-on. Nothing below is edited.
+<table>
+<tr>
+<td width="50%">
 
-<details>
-<summary>The question</summary>
+## Before
 
-```text
-My Docker build reinstalls every npm package whenever I change a source file, so each build takes minutes. Why, and how do I fix it? Here is my Dockerfile:
+> Great question! Docker build performance can depend on a lot of factors. Looking at your Dockerfile, I notice that you're copying the entire project directory before running `npm ci`, which means that any change to any file invalidates the layer cache and forces a full reinstall of dependencies. One approach would be to copy `package.json` and `package-lock.json` first, run the install, and then copy the rest. You might also want to add a `.dockerignore` file to exclude `node_modules` and other large directories. Hope this helps! Let me know if you'd like me to make these changes.
 
-FROM node:22-slim
-WORKDIR /app
-COPY . .
-RUN npm ci
-RUN npm run build
-CMD ["node", "dist/server.js"]
-```
+</td>
+<td width="50%">
 
-</details>
+## After
 
-**With concise** (15 lines, 134 words):
+> Move `COPY . .` below `RUN npm ci` so the dependency layer caches (`Dockerfile:6`).
+>
+> 1. Add `COPY package*.json ./` before `RUN npm ci`
+> 2. Move `COPY . .` after it
+> 3. Rebuild: `docker build .` (the second build skips `npm ci`)
+>
+> Separately: no `.dockerignore`, so `node_modules` is sent to the daemon. Want that next?
 
-Copy `package.json` and `package-lock.json` first, run `npm ci`, and only then copy the rest of the source:
-
-```dockerfile
-FROM node:22-slim
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-CMD ["node", "dist/server.js"]
-```
-
-The cause is Docker's layer cache. Docker reuses a layer only if that step's inputs haven't changed. Right now `COPY . .` comes before `npm ci`, so editing any source file invalidates the cache for that copy and every step after it, including the install. With the new order, `npm ci` reruns only when one of the two package files changes.
-
-Also add a `.dockerignore` that lists `node_modules` and `dist`. Without it, `COPY . .` sends your local `node_modules` into the build context, which slows the build and overwrites the modules you just installed.
-
-<details>
-<summary><strong>Without concise</strong> (54 lines, 282 words)</summary>
-
-**Why it happens:** Docker caches each instruction as a layer. A layer gets reused only if nothing it depends on has changed. `COPY . .` copies your whole project, source files included. So any source edit invalidates that layer, and every layer after it gets rebuilt too, including `RUN npm ci`.
-
-**Fix:** Copy only the dependency manifests first and install, then copy the rest:
-
-```dockerfile
-FROM node:22-slim
-WORKDIR /app
-
-# Only changes to these files invalidate the install layer
-COPY package.json package-lock.json ./
-RUN npm ci
-
-# Source changes only invalidate layers from here down
-COPY . .
-RUN npm run build
-
-CMD ["node", "dist/server.js"]
-```
-
-Now `npm ci` reruns only when `package.json` or `package-lock.json` changes. Ordinary code edits reuse the cached `node_modules` layer.
-
-**Also add a `.dockerignore`.** Without one, `COPY . .` sends your local `node_modules` into the image, where it can overwrite the clean install. It also sends files like `.git`, which change often and break the cache for no reason:
-
-```
-node_modules
-dist
-.git
-npm-debug.log
-```
-
-**Optional improvements:**
-
-- **Cache mount:** Even when the lockfile changes, this lets npm reuse its download cache instead of fetching everything again (needs BuildKit, which is the default in current Docker):
-  ```dockerfile
-  RUN --mount=type=cache,target=/root/.npm npm ci
-  ```
-- **Multi-stage build:** This keeps devDependencies and build tools out of the final image:
-  ```dockerfile
-  FROM node:22-slim AS build
-  WORKDIR /app
-  COPY package.json package-lock.json ./
-  RUN npm ci
-  COPY . .
-  RUN npm run build
-
-  FROM node:22-slim
-  WORKDIR /app
-  COPY package.json package-lock.json ./
-  RUN npm ci --omit=dev
-  COPY --from=build /app/dist ./dist
-  CMD ["node", "dist/server.js"]
-  ```
-
-The reordering alone should bring rebuilds after a code change down from minutes to roughly the time `npm run build` takes.
-
-</details>
-
-The fix moves to the first line, the reason follows it, and three optional extras shrink to one short paragraph. Across three runs each, answers were 209 to 282 words without the plugin and 134 to 148 words with it. That is one prompt and a small sample, so read it as an illustration.
-
-## Examples
-
-Real answers from concise 0.3.1 always-on, generated on 2026-10-05 with `claude -p` and no user settings. Unedited, one run each.
-
-### A yes/no question
-
-Yes or no comes first, then what you need to act on it.
-
-> Can I use top-level await in an ES module on Node 20?
-
-Yes. Node 20 supports top-level `await` in ES modules without any flag. It has been stable since Node 14.8.
-
-The file has to be treated as ESM, which means either of these:
-
-1. Use the `.mjs` extension.
-2. Set `"type": "module"` in `package.json`.
-
-```js
-// index.mjs
-const res = await fetch("https://example.com");
-console.log(res.status);
-```
-
-Top-level `await` does not work in CommonJS (`.cjs` files, or `.js` files without `"type": "module"`).
-
-### A question about options
-
-Options are numbered, recommendation first, so you can reply "2".
-
-> What are my options for running a Python script every hour on a Linux server?
-
-1. **cron** (recommended for most cases): built in, one line, nothing else to install. It skips missed runs while the server is down and gives no logging unless you add it.
-   ```bash
-   crontab -e
-   # Runs at minute 0 of every hour; output is appended to a log file
-   0 * * * * /usr/bin/python3 /path/to/script.py >> /var/log/script.log 2>&1
-   ```
-2. **systemd timer**: you get logs in `journalctl`, a missed run can fire after a reboot (`Persistent=true`), and overlapping runs are prevented. You write two unit files (`.service` and `.timer`) with `OnCalendar=hourly`.
-3. **A long-running Python loop** (the `schedule` or `APScheduler` libraries): all scheduling stays in code. You have to keep the process alive yourself with systemd or supervisor, and a crash stops every future run.
-4. **A container or orchestrator scheduler** (Kubernetes CronJob, Airflow): worth it only if you already run that platform or need retries, dependencies between jobs, and a dashboard.
-
-Use absolute paths in cron. Cron runs with a minimal environment, so point it at the virtualenv interpreter directly, for example `/path/to/venv/bin/python`.
-
-### A commit message
-
-The rules also cover text written for other readers. What it could not confirm is said in one place.
-
-<details>
-<summary>The prompt</summary>
-
-````text
-Write a commit message for this diff.
-
---- a/src/retry.ts
-+++ b/src/retry.ts
-@@ -4,7 +4,8 @@ export async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
-     try {
-       return await fn();
-     } catch (err) {
--      if (i === attempts) throw err;
-+      if (i === attempts - 1) throw err;
-+      await sleep(2 ** i * 100);
-     }
-   }
- }
-````
-
-</details>
-
-```
-Fix retry swallowing the final error and add backoff
-
-The loop counter runs from 0 to attempts - 1, so the check
-`i === attempts` never matched. After the last failed attempt,
-retry() returned undefined instead of throwing the error.
-It now throws on the last attempt (i === attempts - 1).
-
-Failed attempts are now followed by an exponential backoff of
-2^i * 100 ms (100 ms, 200 ms, 400 ms, ...) before the next try.
-```
-
-This assumes the loop is `for (let i = 0; i < attempts; i++)`. The diff doesn't show the loop header, so I haven't confirmed that. It also assumes `sleep` already exists in `src/retry.ts`, because the diff doesn't import it.
+</td>
+</tr>
+</table>
 
 ## The shape
 
