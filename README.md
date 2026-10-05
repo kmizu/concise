@@ -68,8 +68,8 @@ CMD ["node", "dist/server.js"]
 
 <table>
 <tr>
-<th width="50%">Before (282 words)</th>
-<th width="50%">After (134 words)</th>
+<th width="50%">Before</th>
+<th width="50%">After</th>
 </tr>
 <tr>
 <td valign="top">
@@ -160,8 +160,8 @@ Both say "Yes" first. concise stops once you can act on it.
 
 <table>
 <tr>
-<th width="50%">Before (217 words)</th>
-<th width="50%">After (68 words)</th>
+<th width="50%">Before</th>
+<th width="50%">After</th>
 </tr>
 <tr>
 <td valign="top">
@@ -216,8 +216,8 @@ Options are numbered, recommendation first, so you can reply "2".
 
 <table>
 <tr>
-<th width="50%">Before (400 words)</th>
-<th width="50%">After (175 words)</th>
+<th width="50%">Before</th>
+<th width="50%">After</th>
 </tr>
 <tr>
 <td valign="top">
@@ -307,8 +307,6 @@ Use absolute paths in cron. Cron runs with a minimal environment, so point it at
 </td>
 </tr>
 </table>
-
-For the first prompt, three runs each gave 209 to 282 words before and 134 to 148 words after. These are single prompts and small samples, so read them as illustrations.
 
 ## The shape
 
