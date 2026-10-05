@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "102やで。"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "Roll back to the previous release now.\n\n1. Start the rollback, which takes 2 minutes.\n2. Check that requests succeed on the previous release. Redact passwords before inspecting request logs.\n\nThe new release fails 20% of requests, while the previous release has no measured failures. The untested cache experiment takes 30 minutes and would delay recovery."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "重複注文、配送先更新、ログの電話番号を、それぞれ直すで。\n\n1. `idempotency key` を検証し、同じキーの再送で注文が二重に作られないようにする。同時に届く再送もテストする。\n2. `address_version` を照合し、古い版を使った更新を拒否する。最新版での更新成功と、古い版での拒否をテストする。\n3. 電話番号をログへ書く前に伏せる。障害を再現して、ログに電話番号が残らないことを確認する。\n\n次: `idempotency key` の検証を修正する。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "Yes, in this run: B took 70 ms versus A’s 80 ms; whether B is consistently faster is not verified."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "いいえ、完全に直ったとはまだ確認できてへん。7件中6件は成功して以前の失敗も再現しなくなったけど、残る1件は環境がなく未実行や。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Done: fixture A is corrected. Next: add the missing newline to fixture B."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Deploy to staging or production?"
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "再生成できないユーザー作成データは残して、生成物だけ削除してええ？"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "The test fixture returns HTTP 401 because it sends no `Authorization` header. Add the required header; changing the timeout will not fix missing authentication.\n\nDone: the missing header is identified. Next: fix the fixture’s authorization header."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "```bash\ngit switch main\n```\n\nここではツールを使えへんため、コマンドは未実行や。\n\n改善点は2つあるで。\n\n1. 許可済みの通常作業では、確認を挟まず進める例を加える。\n2. 複数の依頼を受けたときは、各依頼に答えてから締めるようにする。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "このキャッシュは、元データのコピーを最長60秒だけ使い、価格が古くないか毎回確認する仕組みや。\n\n## コピーで読み取りを速くする\n\nたとえば商品価格が1,000円なら、一度読んだ価格を手元のメモに残す。次の問い合わせでは、そのメモを使える。コピーの有効時間を表す「TTL」が60秒やから、60秒を過ぎたメモは使わず、元データを読み直す。\n\n## 更新されたら、すぐメモを無効にする\n\n価格が1,000円から1,200円に変わったら、60秒を待たず、古いメモをすぐ無効にする。次の問い合わせでは新しい価格を読む。\n\n## 価格は更新番号も確認する\n\n元データの更新番号が8、メモの更新番号が7なら、そのメモは古い。価格を返す前に必ず番号を照合し、一致しなければ元データを読み直す。これで、更新時の失効が間に合わなかった場合にも古い価格を見つけられる。\n\n## キャッシュが壊れたら、元データを読む\n\nメモを取り出せなくても、元データから価格を読める。読み取りは遅くなる可能性があるけど、キャッシュ障害だけで価格を読めなくなることは避けられる。"
+  }
+]

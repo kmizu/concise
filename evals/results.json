@@ -1,0 +1,490 @@
+{
+  "collection": {
+    "date": "2026-10-06",
+    "method": "One fresh agent per condition, independently authored fictional vignettes; prompt-only collection input, no rubric access or scenario actions.",
+    "generator": "Inherited Codex session model and reasoning settings; exact backend identity not independently exposed.",
+    "samples_per_case_per_condition": 1,
+    "case_count": 12,
+    "host": "Codex agent session, not a Claude Code model run",
+    "limitations": [
+      "Batch answers in one condition context, rather than one fresh session per case.",
+      "Shared harness instructions may influence all conditions.",
+      "No repeated sampling, multi-turn execution, persistence test, or cross-model comparison."
+    ]
+  },
+  "conditions": {
+    "no-rules": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 37,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 6,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 757,
+          "lines": 5,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 488,
+          "lines": 7,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 424,
+          "lines": 3,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 160,
+          "lines": 3,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 157,
+          "lines": 1,
+          "content_indicators": {
+            "next fix": true,
+            "tests": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 131,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 85,
+          "lines": 1,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 359,
+          "lines": 3,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 301,
+          "lines": 8,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 606,
+          "lines": 14,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 3511,
+      "content_indicator_passes": 12,
+      "reviewed": 12,
+      "quality_passes": 12,
+      "quality_failures": [],
+      "unreviewed": []
+    },
+    "current": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 9,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 6,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 356,
+          "lines": 6,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 242,
+          "lines": 7,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 98,
+          "lines": 1,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": false
+          },
+          "content_indicators_pass": false,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 64,
+          "lines": 1,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 73,
+          "lines": 1,
+          "content_indicators": {
+            "next fix": true,
+            "tests": false
+          },
+          "content_indicators_pass": false,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 32,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 33,
+          "lines": 1,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 247,
+          "lines": 3,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 133,
+          "lines": 10,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 471,
+          "lines": 17,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 1764,
+      "content_indicator_passes": 10,
+      "reviewed": 12,
+      "quality_passes": 8,
+      "quality_failures": [
+        "complex-en",
+        "uncertain-en",
+        "authorized-en",
+        "repeated-failure-en"
+      ],
+      "unreviewed": []
+    },
+    "revised": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 9,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 4,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 493,
+          "lines": 7,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 256,
+          "lines": 7,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 218,
+          "lines": 1,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 83,
+          "lines": 1,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 87,
+          "lines": 1,
+          "content_indicators": {
+            "next fix": true,
+            "tests": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 41,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 69,
+          "lines": 1,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 205,
+          "lines": 1,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 216,
+          "lines": 12,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 390,
+          "lines": 13,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 2071,
+      "content_indicator_passes": 12,
+      "reviewed": 12,
+      "quality_passes": 12,
+      "quality_failures": [],
+      "unreviewed": []
+    }
+  }
+}

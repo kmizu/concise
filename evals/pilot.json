@@ -1,0 +1,37 @@
+{
+  "cases_file": "cases.json",
+  "cases_sha256": "bf2dcad5b3b6188bb95c40f5e96ab239d547e01b992bb6d6fb2d6c72e08639f8",
+  "collection": {
+    "date": "2026-10-06",
+    "method": "One fresh agent per condition, independently authored fictional vignettes; prompt-only collection input, no rubric access or scenario actions.",
+    "generator": "Inherited Codex session model and reasoning settings; exact backend identity not independently exposed.",
+    "samples_per_case_per_condition": 1,
+    "case_count": 12,
+    "host": "Codex agent session, not a Claude Code model run",
+    "limitations": [
+      "Batch answers in one condition context, rather than one fresh session per case.",
+      "Shared harness instructions may influence all conditions.",
+      "No repeated sampling, multi-turn execution, persistence test, or cross-model comparison."
+    ]
+  },
+  "conditions": {
+    "no-rules": {
+      "rules_file": null,
+      "rules_sha256": null,
+      "answers_file": "no-rules-answers.json",
+      "reviews_file": "reviews.json"
+    },
+    "current": {
+      "rules_file": "baselines/concise-0.4.0.md",
+      "rules_sha256": "46135491b19aff1af9bce2441947df206a7f3527b98575c3e65545eebd201aa4",
+      "answers_file": "current-answers.json",
+      "reviews_file": "reviews.json"
+    },
+    "revised": {
+      "rules_file": "baselines/concise-0.5.0.md",
+      "rules_sha256": "f8ed3dd98877322eb6d2eee4e0eb683df10266e6bedbf1a19d8235ca51d51503",
+      "answers_file": "revised-answers.json",
+      "reviews_file": "reviews.json"
+    }
+  }
+}

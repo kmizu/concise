@@ -7,6 +7,7 @@ on:
       - .claude-plugin/plugin.json
       - .gitattributes
       - codex/**
+      - evals/**
       - scripts/**
       - skills/**
       - tests/**
@@ -36,6 +37,8 @@ jobs:
         run: python scripts/build_codex.py --check
       - name: Run unit tests and native load check in scratch config
         run: python -m unittest discover -s tests -v
+      - name: Verify the recorded candidate's semantic review
+        run: python scripts/evaluate_responses.py evals/pilot.json --require-quality --condition revised
       - name: Build the standalone ZIP
         run: python scripts/build_codex.py
       - uses: actions/upload-artifact@v4

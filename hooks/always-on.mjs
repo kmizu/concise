@@ -38,11 +38,9 @@ try {
     .replace(/\n---\n\n[^\n]*$/, "");
 
   process.stdout.write(
-    "CONCISE MODE ACTIVE (always-on). The user turned this on. The ruleset below is the user's " +
-      "standing instruction for how every response is written, starting with the first one. " +
-      "It replaces your default response style wherever the two differ. " +
-      '/concise:off or "stop concise mode" turns it off for this session; ' +
-      `/concise:always-off (or deleting ${flagPath}) turns always-on off for good.\n\n${body}\n`,
+    "CONCISE MODE ACTIVE (always-on). The user opted in. Apply these standing presentation rules to every response. " +
+      '/concise:off or "stop concise mode" turns them off this session; ' +
+      `/concise:always-off (or deleting ${flagPath}) disables always-on.\n\n${body}\n`,
   );
 } catch {
   // Never block session start.

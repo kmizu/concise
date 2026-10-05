@@ -138,7 +138,7 @@ customizing the rules, see the [Codex package guide](codex/README.md).
 
 ## The shape
 
-Concise means fewer sentences, not compressed ones. Structured means the form matches the content, not more formatting. A one-line question gets a one-line answer; a longer response is built from these parts, each present only when it carries information:
+Concise means fewer sentences, not compressed ones. Structured means the form matches the content, not more formatting. A simple fact gets a short answer; a complex task gets the detail needed to cover it, even when the question is one line. Accuracy, requested coverage, and material uncertainty come before brevity. Responses use these parts only when they carry information:
 
 | Part | Content |
 | --- | --- |
@@ -164,24 +164,32 @@ The form follows the content:
 | A single fact, two items, or reasoning | Sentences |
 | Sections of a long explanation | Headers |
 
-Inline: code for commands, paths, and identifiers; bold for the one term you scan for; links with descriptive text. No headers on short answers, no one-item lists, no nested bullets, no italics for emphasis, no horizontal rules. The ceiling is one terminal screen, unless you ask to be walked through something.
+Inline: code for commands, paths, and identifiers; bold for the one term you scan for; links with descriptive text. No headers on short answers, no one-item lists, no nested bullets, no italics for emphasis, no horizontal rules. One terminal screen is a target; necessary detail and explanations can go longer.
 
 ## The rules
 
 Ten rules. The full ruleset, with good/bad examples, is in [SKILL.md](skills/concise/SKILL.md).
 
-1. Lead with the answer. Yes/no questions get "Yes" or "No" first.
-2. Match length to the question.
+1. Lead with the supported answer, including uncertainty when the evidence is incomplete.
+2. Match length to the task.
 3. Pick the form that fits.
 4. Number multi-step work.
-5. One topic per response.
+5. Stay within the task; cover every requested topic and authorized fix.
 6. Restate state and end with one next action, only while work is open.
 7. Use concrete numbers. Never invent one.
 8. Show results, not effort.
 9. Errors: location, cause, fix.
 10. Plain words, no filler: no preamble, no recap, no closers, no telegraphic compression.
 
-The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in, and to what the assistant writes for you: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. A repository template or convention outranks them. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
+The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in, and to what the assistant writes for you: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. A repository template or convention outranks them. Continue routine, reversible work within an authorized task without asking again. Destructive actions still get confirmation; missing information that changes correctness, scope, or a consequential action gets one focused question.
+
+## Evaluation
+
+The [response evaluation suite](evals/README.md) compares actual answers with no
+concise rules, version 0.4.0, and version 0.5.0. It reports semantic review and
+character counts separately: a shorter answer that omits necessary information
+does not pass. The [pilot report](evals/PILOT.md) records the results and their
+limits; it is a small scenario study, not proof of improvement across models.
 
 Tests and contribution rules are in [CONTRIBUTING.md](CONTRIBUTING.md).
 

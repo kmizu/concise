@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "102。"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "Roll back now. The new release fails 20% of requests; the previous release has no failures, and rollback takes 2 minutes.\n\n1. Restore the previous release.\n2. Check request success and failure rates under comparable traffic, and confirm the previous release is serving requests.\n3. Redact passwords before inspecting or sharing request logs to diagnose the failed release.\n\nThe untested cache experiment takes 30 minutes and should wait until service is restored. Recovery is not verified yet."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "重複注文、配送先更新、ログの電話番号漏出をそれぞれ直す。\n\n1. 注文処理で `idempotency key` を検証し、同じキーの再送で注文が増えないようにする。再送と不正なキーのテストで確認する。\n2. 配送先更新で `address_version` を照合し、古い版からの更新を拒否する。最新版での成功と古い版での拒否をテストする。\n3. 障害ログを書き出す前に電話番号を伏せる。障害を起こすテストで、出力に電話番号が残らないことを確認する。\n\n修正とテストは未実行。次は注文処理のキー検証を修正する。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "B was 10 ms faster in one run: 70 ms versus 80 ms. A repeatable improvement is unverified because run-to-run noise has not been measured. Repeat both versions under the same load and compare their timing distributions."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "以前の失敗は再現しなくなったけど、全ケースが直ったとはまだ確認できていない。7件中6件は成功、残り1件は環境がなく未実行。次はその環境を用意して、残り1件を実行する。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Fixture A is corrected. Next: add the missing newline to fixture B and rerun the tests."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Should I deploy to staging or production?"
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "再生成できないユーザー作成データは残し、生成物だけを整理する。まずフォルダ内で生成物とユーザーデータを識別する。削除はまだ実行していない。"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "The test fails with HTTP 401 because its request lacks the Authorization header required by the route. Changing the timeout cannot fix that. Next: add valid authorization to the fixture and rerun the test."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "```bash\ngit switch main\n```\n\nこの評価ではコマンドを実行できないため、現在は `feature` のまま。作業ツリーは `clean`。\n\nプラグインの改善案は2つ。\n\n1. 短く答えても、未実行の確認や不確実性を残せるかを確かめる応答例を増やす。\n2. 許可済みの修正は続け、対象が不明なデプロイでは質問する、といった判断の違いを具体例で示す。\n\n次は `git switch main` を実行する。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "このキャッシュは、元データのコピーを最大60秒使って読み取りを速くし、更新時にはコピーをすぐ無効にする仕組み。価格を返す前には、必ず元データの更新番号も照合する。\n\n## コピーを使う\n\nたとえば、元データに「価格1,000円、更新番号7」とあれば、そのコピーを保存して使う。TTLの60秒は、コピーを使える期限。期限を過ぎたら、そのコピーは使わず元データを読み直す。\n\n## 更新されたら無効にする\n\n20秒後に価格が1,200円、更新番号8になった場合、60秒の期限を待たずに古いコピーを無効にする。価格を返す際にも更新番号を照合するので、コピーが番号7のままなら、その価格は使わず最新の元データを読む。\n\n## キャッシュが故障したら元データを読む\n\nキャッシュにアクセスできなくても、元データから価格を取得する。コピーによる高速化は使えなくなるけど、価格を読む経路は残る。"
+  }
+]
