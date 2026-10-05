@@ -1,0 +1,6 @@
+interface:
+  display_name: "Concise"
+  short_description: "Clear answers with no filler"
+  default_prompt: "Use $concise:concise for this conversation."
+policy:
+  allow_implicit_invocation: false

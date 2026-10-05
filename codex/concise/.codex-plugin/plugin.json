@@ -1,0 +1,34 @@
+{
+  "name": "concise",
+  "version": "0.4.0",
+  "author": {
+    "name": "Kota Mizushima",
+    "url": "https://github.com/kmizu"
+  },
+  "homepage": "https://github.com/kmizu/concise",
+  "repository": "https://github.com/kmizu/concise",
+  "license": "MIT",
+  "description": "Structured, concise answers in Codex: answer first, numbered steps, and no filler. Activate explicitly with $concise:concise.",
+  "keywords": [
+    "concise",
+    "output-style",
+    "structured-output",
+    "productivity",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Concise",
+    "shortDescription": "Clear answers, less scrolling",
+    "longDescription": "Apply ten presentation rules with $concise:concise. Use $concise:concise-off to return to the default style. No tools, hooks, or persistent settings.",
+    "developerName": "Kota Mizushima",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/kmizu/concise",
+    "defaultPrompt": "Use $concise:concise for this conversation.",
+    "logo": "./assets/logo.svg",
+    "composerIcon": "./assets/logo.svg"
+  }
+}
