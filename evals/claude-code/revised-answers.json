@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "102"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "**Roll back to the previous release now.** It takes 2 minutes, it's already authorized, and the previous release had no failures. The new release is failing 20% of requests while it stays live.\n\nHold off on the cache experiment. It's untested and takes 30 minutes, which is 15 times longer than the rollback. Even if it worked, it wouldn't address the 20% failure rate.\n\nSteps:\n1. Roll back to the previous release.\n2. Watch the error rate. It should drop from 20% to about 0% within a few minutes of the rollback finishing. If failures continue, the rollback didn't take effect or something else is wrong, so check which version is actually serving traffic.\n3. Redact passwords from the request logs before anyone reads or shares them. Do this for the logs used to check the rollback and for the logs used to debug the failed requests.\n4. Find what causes the 20% failures using the redacted logs. Then test the cache experiment, if you still want it, in staging before it goes anywhere near production.\n\nCaveats:\n- \"Previous release has no failures\" is a past measurement. The check in step 2 is what confirms it still holds after the rollback.\n- If the new release changed any data or schemas, check that the previous release still works with them before rolling back. Nothing here says it did."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "三つとも、確定条件を保存処理の中でチェックするように直します。対象の実装コードはまだ確認していないので、以下は修正方針と実装の形です。\n\n1. 重複注文は、idempotency key を必須にして、保存時の一意制約で判定します。\n   - key がない、または形式が不正なら `400` を返します。\n   - key、リクエスト本文のハッシュ、応答を同じトランザクションで保存します。`idempotency_key` には UNIQUE 制約を付けます。\n   - 同じ key で本文も同じなら、保存済みの応答を返し、注文は作りません。\n   - 同じ key で本文が違うなら `422` を返します。\n   - 判定は「SELECT してから INSERT」にせず、「INSERT して一意制約違反を検知」にします。同時に届いた二つのリクエストの両方が通るのを防ぐためです。\n\n2. 配送先更新は、address_version を条件にした楽観ロックにします。\n   ```sql\n   UPDATE orders\n   SET address = :address, address_version = address_version + 1\n   WHERE id = :id AND address_version = :expected_version;\n   ```\n   - 更新件数が 0 件なら `409 Conflict` を返し、最新の version を返します。\n   - リクエストに `expected_version` がなければ `400` を返します。\n\n3. 電話番号は、ログ出力の共通処理で必ずマスクします。\n   - 構造化ログでは、`phone` や `tel` などのフィールドを `***-****-1234` のように下4桁だけ残して置き換えます。\n   - メッセージ本文やスタックトレースの中にある番号も、正規表現でまとめてマスクします。\n   - 呼び出し側の各所で直すと漏れが出るので、logger の formatter で処理します。\n\n追加するテストは次のとおりです。\n- [ ] 同じ key・同じ本文で2回送ると、注文は1件で、応答も同じになる\n- [ ] 同じ key で本文が違うと `422` になる\n- [ ] 同じ key を並行で送っても、注文は1件しかできない\n- [ ] 古い `address_version` で更新すると `409` になり、データは変わらない\n- [ ] 正しい version で更新すると、version が1増える\n- [ ] 障害ログの出力に電話番号の数字列が含まれない（フィールド内と本文内の両方）\n\nすでに出力された障害ログに残っている電話番号は、今回の修正では消えません。その削除や保持期間の見直しは別の対応になります。\n\n次は、対象のコードを渡してもらうか場所を教えてもらえれば、この方針で修正してテストを流します。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "B was 10 ms (12.5%) faster in a single run, but that doesn't show B is reliably faster. Run-to-run noise hasn't been measured, so the 10 ms gap could be noise alone.\n\nTo find out:\n\n1. Run each version at least 10 to 30 times under the same load, alternating A and B so drift affects both equally.\n2. Compare medians and spread, such as the interquartile range or a 95% confidence interval for the difference.\n3. Treat B as faster only if the gap stays well above the run-to-run variation."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "まだ「直った」とは言えません。以前の失敗は再現しなくなりましたが、7件中1件が未実行です。\n\n- **成功**: 6件\n- **未実行**: 1件（実行環境がないため）。この1件が修正対象の不具合に関係するかどうかは、まだ確認できていません。\n- **再現確認**: 以前の失敗は再現しませんでした。ただし、すべてのケースで確かめたわけではありません。\n\n次は、残りの1件を実行できる環境を用意して実行してください。それも成功し、以前失敗した条件でも再現しなければ「直った」と判断できます。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Fixture A is fixed, according to the read-only snapshot. The tests haven't been rerun yet. Fixture B fails for the same reason: it's missing the final newline.\n\nNext: add that newline to fixture B and rerun the parser tests."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Should I deploy to **staging** or **production**? Both deployments exist, and nothing so far says which one you mean."
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "どのフォルダを片付けるか教えてください。パスがわかれば、中身を確認してから進めます。\n\n片付けの方針は次のとおりです。\n\n1. フォルダの中身を一覧にして、生成物（ビルド出力、キャッシュ、ログなど）とユーザーが作成したデータに分けます。\n2. 再生成できない作成データには一切手を付けません。\n3. 削除するのは生成物だけです。実行する前に削除リストをお見せして、承認をいただきます。\n\nなお、今の環境では、ローカルのファイルを読み書きするツールが私の側から見えていません。パスを教えていただいても中身を確認できない場合は、削除せずに一覧を出すだけのコマンドをお渡しします。その出力を貼っていただければ、それを元に削除リストを作ります。"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "**Stop changing the timeout.** Retrying won't help: the test request has no `Authorization` header, and the route rejects any request without one with HTTP 401.\n\nI can't make the change myself because this session has no file-editing or shell tools. Only Gmail, Calendar, Drive and Docs are connected. Here is the fix:\n\n1. In the test fixture that builds the request, add the header the route checks for:\n   ```ts\n   headers: { Authorization: `Bearer ${token}` }\n   ```\n   Use whatever token the test environment already provides, such as a seeded test user or a `TEST_API_TOKEN` env var.\n2. Undo the three timeout changes so the fixture fix is the only difference.\n3. Rerun the failing test. You should get the success status (likely 200) instead of 401.\n\nIf it still returns 401 once the header is sent, the token is the problem: it's either invalid or expired, or it's for the wrong audience. It's no longer a missing header.\n\nIf you want me to make the change and rerun the test, turn on file and shell tools for this session."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "```powershell\ngit switch main\n```\n\nこのコマンドはまだ実行していません。作業ツリーはクリーンなので、未コミットの変更を失わずに切り替えられます。\n\nconcise プラグインの改善点:\n\n1. **毎セッションの読み込み量を減らす**: 現在はルールセット全体（約200行）が SessionStart フックで毎回注入されます。冒頭、形式、禁止表現の中核ルールだけを常時注入し、例や例外は必要なときに参照する形に分ければ、コンテキストの消費を抑えられます。\n2. **日本語の具体例を追加する**: 禁止表現は「他言語では同等の表現にも適用」とあるだけで、例は英語しかありません。「承知しました」「〜してみましょう」「お役に立てれば幸いです」などの日本語例を載せると、日本語の応答でもルールが安定して守られます。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "このキャッシュは「速く返すための一時コピー」です。ただし価格を返すときは、毎回元データの更新番号と照合します。そのため、古い価格が客に表示されることはありません。\n\n## 用語\n\n- **元データ**: 正しい価格が保存されている本来の場所です（例: データベース）。正確ですが、読むのに時間がかかります。\n- **キャッシュ**: 元データのコピーを置いておく場所です。速く読めますが、中身が古くなっている可能性があります。\n- **TTL（有効期限）**: コピーを保存してから使ってよい時間です。この仕様では60秒です。\n- **更新番号**: 価格が変わるたびに1ずつ増える番号です。コピーが最新かどうかを見分けるのに使います。\n\n## 具体例: りんごの価格\n\n元データに「りんご 100円、更新番号5」が入っているとします。\n\n| 時刻 | 出来事 | 何が起きるか |\n|---|---|---|\n| 0秒 | 客Aが価格を見る | キャッシュは空なので元データから読みます。「100円・番号5」をキャッシュに保存して返します |\n| 10秒 | 客Bが価格を見る | キャッシュに「番号5」があり、元データの番号も5で一致します。キャッシュの100円を返します |\n| 20秒 | 店が120円に値上げ | 元データが「120円・番号6」になります。同時にキャッシュの「りんご」は即座に削除されます |\n| 25秒 | 客Cが価格を見る | キャッシュが空なので元データから読みます。「120円・番号6」を保存して返します |\n| 85秒 | 客Dが価格を見る | 25秒の保存から60秒たったので期限切れです。元データから読み直します |\n| 90秒 | キャッシュのサーバーが故障 | 客Eには元データから直接120円を返します。遅くはなりますが、価格は正しいままです |\n\n## 4つのルールの役割\n\n1. **TTL 60秒**: 万一ほかの仕組みが失敗しても、古いコピーが残るのは最長60秒で済みます。\n2. **更新時に即座に失効**: 値上げした直後から、古い100円が返らなくなります。60秒待つ必要がありません。\n3. **障害時は元データを読む**: キャッシュは「あれば速くなる」おまけの扱いです。キャッシュが壊れてもサービスは止まりません。\n4. **更新番号の照合**: ルール2の削除が何らかの理由で失敗し、キャッシュに「100円・番号5」が残っていたとします。それでも元データの番号6と食い違うため、古いと判定できます。価格は間違えると実害が出るので、最後の安全装置として置かれています。\n\n## 注意点\n\n- ルール4のため、価格を返すたびに元データへの問い合わせが必ず発生します。キャッシュで省けるのは「価格データ本体を読む手間」だけで、元データへのアクセス自体は減りません。照合の問い合わせを軽くしておかないと、キャッシュの効果は小さくなります。\n- 仕様には次の2点が書かれていません。実装前に決める必要があります。\n  - 番号が食い違ったときの動き（一般的には、元データから読み直してキャッシュを更新します）\n  - 元データ自体が故障したときの動き（エラーを返すのか、価格を表示しないのか）"
+  }
+]

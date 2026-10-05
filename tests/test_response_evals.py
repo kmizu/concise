@@ -234,14 +234,28 @@ class ResponseEvalTest(unittest.TestCase):
                     self.module.score_experiment(manifest)
 
     def test_recorded_candidate_matches_the_shipped_rules_and_report(self):
-        manifest = ROOT / "evals/pilot.json"
+        self.assert_recorded_candidate(ROOT / "evals/pilot.json", ROOT / "evals/results.json")
+
+    def test_recorded_claude_code_pilot_matches_the_shipped_rules_and_report(self):
+        # The Claude Code pilot is recorded evidence, not a release gate: its
+        # candidate passed 11 of 12, and the report says so. The test keeps the
+        # record reproducible and bound to the shipped rules.
+        scores = self.assert_recorded_candidate(
+            ROOT / "evals/claude-code/pilot.json", ROOT / "evals/claude-code/results.json", require_all_pass=False)
+        for condition in scores["conditions"].values():
+            self.assertEqual(12, condition["reviewed"])
+            self.assertFalse(condition["unreviewed"])
+
+    def assert_recorded_candidate(self, manifest, results, require_all_pass=True):
         experiment = self.module.read_json(manifest)
         candidate = experiment["conditions"]["revised"]
         snapshot = self.module.contained_file(manifest.parent, candidate["rules_file"])
         self.assertEqual((ROOT / "skills/concise/SKILL.md").read_text(encoding="utf8"),
                          snapshot.read_text(encoding="utf8"), "Collect and review the changed rules again")
         scores = self.module.score_experiment(manifest)
-        self.assertEqual(self.module.read_json(ROOT / "evals/results.json"), scores)
+        self.assertEqual(self.module.read_json(results), scores)
         revised = scores["conditions"]["revised"]
-        self.assertEqual(revised["sample_count"], revised["quality_passes"])
+        if require_all_pass:
+            self.assertEqual(revised["sample_count"], revised["quality_passes"])
         self.assertFalse(revised["unreviewed"])
+        return scores

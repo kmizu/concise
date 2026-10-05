@@ -30,6 +30,19 @@ does not override semantic quality. Regex checks are content indicators only:
    Provide only the prompt-only input and that condition's rules, or no concise
    rules. For a stronger study, use fresh sessions for every case and repeated
    samples, recorded as separate experiments.
+   For Claude Code, `scripts/collect_claude_answers.py` does this with one
+   fresh `claude -p` session per case, user settings and tools disabled, run
+   from an empty non-repository directory so no real git state reaches the
+   model, and the rules injected by the real always-on hook from a frozen
+   plugin checkout:
+
+   ```bash
+   python scripts/collect_claude_answers.py evals/<dir>/prompts.json evals/<dir>/no-rules-answers.json
+   python scripts/collect_claude_answers.py evals/<dir>/prompts.json evals/<dir>/revised-answers.json --plugin-dir .
+   ```
+
+   Run it only against a checkout whose hook matches the rules you froze; for an
+   older version, `git archive <commit> | tar -x -C <dir>` and pass that `<dir>`.
 2. Capture answers without editing them as JSON arrays of `{case_id, text}`.
    These are fictional text-only scenarios: do not execute their deployments,
    fixes, cleanup, or other actions. Record date, model identity/settings when
@@ -86,7 +99,11 @@ reviewer is another agent from the same model family. Condition labels were
 hidden, but stylistic clues may still reveal them. Shared harness instructions
 also influence the no-rules condition.
 
-These are not repeated trials, native Claude Code model responses, actual
-multi-turn work, or a persistence test. The results can expose omissions and
-support a wording change; they do not establish statistical significance or
-general improvement across models and tasks.
+These are not repeated trials, actual multi-turn work, or a persistence test.
+The results can expose omissions and support a wording change; they do not
+establish statistical significance or general improvement across models and
+tasks.
+
+A second pilot, in [`claude-code/`](claude-code/PILOT.md), repeats the same
+suite and review procedure with native Claude Code responses collected through
+the always-on hook, one fresh session per case.

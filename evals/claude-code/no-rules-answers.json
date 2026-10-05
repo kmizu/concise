@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "The capital of Australia is Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "17×6は**102**です。"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "**Roll back to the previous release now.**\n\n**Why**\n- The new release fails 20% of requests. The previous release had no failures. Every minute you stay on the new release, users keep getting errors.\n- Rollback takes 2 minutes and you already have permission to do it. It's the fastest proven fix.\n- Don't try the cache experiment first. It takes 30 minutes, has never been tested, and nothing shows the cache is causing the failures. That would mean at least 15 times longer at a 20% failure rate, for a fix that might not work. If it's still worth trying, test it later in staging or behind a canary.\n\n**How to check it**\n1. **Confirm the version:** make sure every instance is running the previous release, with no mixed fleet.\n2. **Watch the error rate:** it should drop from about 20% to about 0% (the old baseline) within a few minutes of the rollback finishing. Keep watching for 15–30 minutes to catch delayed or intermittent failures.\n3. **Check latency and traffic:** they should match the old baseline. This rules out fewer errors being caused by less traffic.\n4. **Use the logs safely:** redact passwords before anyone reads, exports or shares the request logs. This includes logs pasted into tickets or postmortems. Where you can, use aggregate metrics like error counts and status codes instead of raw logs.\n\n**Afterward**\n- Find the root cause of the 20% failure rate in the new release, using redacted logs.\n- Add a check that would have caught it before full rollout, such as a canary with an error-rate gate.\n- Only then decide whether the cache experiment is worth running, and test it outside production first."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "手元のツールではリポジトリのコードを読めないので、修正方針とテスト観点だけまとめます。コードを貼ってもらえれば、それに合わせた差分にします。\n\n## 1. 重複注文（idempotency key を検証していない）\n- 注文作成の入口で key を必須にし、`(client_id, idempotency_key)` に DB の一意制約を付けます。\n- 同じ key とリクエスト内容のハッシュが一致したら、前回のレスポンスをそのまま返します。\n- key が同じで内容だけ違う場合は 409/422 で拒否します。\n- 確認してから INSERT する方式は競合に弱いので使いません。INSERT して一意制約違反を捕捉する方式にします。\n- テスト:\n  - 同じ key で2回呼ぶと注文は1件で、同じレスポンスが返る\n  - 同じ key で並行に送っても注文は1件\n  - 同じ key で内容が違えば拒否される\n  - key がなければ拒否される\n\n## 2. 配送先更新の失敗（address_version を照合していない）\n- 楽観ロックにします。\n\n  ```sql\n  UPDATE addresses SET ..., address_version = address_version + 1\n  WHERE id = ? AND address_version = ?\n  ```\n\n- 更新件数が 0 件なら 409 を返し、クライアントに最新の住所を取り直して再試行してもらいます。\n- テスト:\n  - version が一致すれば更新され、version が +1 される\n  - 古い version では 409 になり、データは変わらない\n  - 2つの更新が並行したら、片方だけ成功する\n\n## 3. 障害ログに電話番号が出る\n- ロガーに PII マスキング用のフィルタを入れます。対象はキー名（`phone`, `tel` など）と、電話番号に見える値の正規表現の両方です（例: `***-****-1234`）。\n- 例外メッセージやリクエストのダンプでは、注文オブジェクトを丸ごと出力するのをやめ、ID だけを記録するようにします。\n- 既存のログの保持期間とパージの要否は別に確認が必要です。\n- テスト: 障害経路でログを捕捉し、電話番号のパターンが含まれないことを確認します。\n\n**進め方:** 1と2はデータ整合性に関わるので先に直し、3は横断的なフィルタとして最後に入れます。それぞれ、失敗を再現するテストを先に書いてから修正します。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "**We can't tell yet.** B's single run was 10 ms (12.5%) faster than A's single run. With only one run per version and no measure of run-to-run noise, that gap could be real or could be random variation. Benchmark noise of 10–15% is common, especially on a shared machine or with cold caches.\n\nTo find out:\n- Run each version many times (for example, 20–30), alternating A and B so drift affects both equally.\n- Compare the medians and the spread (standard deviation or interquartile range).\n- If the gap is much larger than the run-to-run variation, or a simple test such as Mann-Whitney U shows a significant difference, B is likely faster.\n\nFor now, B *might* be faster, but one run each isn't enough to say."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "まだ「直った」とは言い切れません。\n\n- **確認できたこと**: 以前の失敗は再現しなくなり、7件中6件が成功しています。修正が効いている可能性は高いです。\n- **まだ言えないこと**: 残り1件は環境がなくて実行できていないので、そのケースが通るかどうかは分かりません。\n\nこの残り1件が、元の不具合に関係する経路を通るテストなら、それを実行するまで判断は保留にすべきです。関係しないテストなら「ほぼ修正済み、1件は未検証」と報告するのが正確です。\n\n最後の1件を実行できる環境を用意してもらえれば、それで結論を出せます。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Fixture A is fixed. Fixture B fails on the same missing trailing newline, so I'm adding it now and then running the parser tests again."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Should I deploy to staging or production? I'll start once you tell me."
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "どのフォルダを片付ければよいか教えてください。作業ディレクトリ（`concise-eval-0cxt0o6m`）にはまだ何も特定されていません。\n\n進め方は次のとおりです。\n- **削除するもの**: 再生成できる生成物だけです（ビルド出力、キャッシュ、ログ、一時ファイルなど）。\n- **残すもの**: ユーザーが作ったデータです。再生成できないものや、どちらか判断できないものも、すべて残します。\n- **削除前**: 削除候補の一覧をお見せして、確認をいただいてから削除します。\n\nなお、今のセッションにはローカルのファイルを操作するツールが読み込まれていません。フォルダのパスをいただいた後で、ファイル操作のツールを有効にしていただく必要があるかもしれません。"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "Stop changing the timeout. That isn't the cause. The test gets a 401 because it sends no `Authorization` header, and the route requires one. No timeout setting will fix that.\n\n**Next step: fix the test fixture so it sends the header, then rerun the test.**\n\n1. In the fixture that builds the test client or request, add the header the route expects. For example, `Authorization: Bearer <test-token>`, using whatever token or helper your test setup already provides.\n2. Undo the three timeout changes so the fix stays small.\n3. Rerun the test. It should pass. If it still returns a 401, the token itself is being rejected (wrong secret, expired, or wrong scheme), so check how the route validates it.\n\nYou've already approved this fix, but I can't apply it from this session: I have no file-editing or shell tools, only Docs, Gmail, Calendar and Drive. If you paste the fixture and the test, I'll write the exact change. Or run it in a session that has file and shell access and I'll make the fix and rerun the test there."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "**mainへの切り替え**\n\n作業ツリーはクリーンなので、次のコマンドで安全に切り替えられます。\n\n```powershell\ngit switch main\n```\n\nこの評価ではツールを使わない前提なので、コマンドはまだ実行していません。\n\n**プラグインの改善点**\n\nどのプラグインのことか、まだ分かりません。作業ディレクトリはgitリポジトリではなく、プラグインのコードも見ていないためです。根拠のない改善点を挙げるのは避けたいので、次のどちらかを教えてください。\n\n- プラグインのリポジトリのパス、または名前\n- 主要なファイル（例: `plugin.json`、エントリポイント）の内容\n\nコードを確認できれば、具体的な改善点を2つ挙げます。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "# キャッシュ設計の説明（初心者向け）\n\n## そもそもキャッシュとは？\n\n**キャッシュ**は、よく使うデータを手元に一時的に置いておく仕組みです。\n\n身近な例で言うと、お店の店員さんが「りんごの値段」を毎回倉庫の台帳（**元データ**）まで確認しに行くと時間がかかります。そこで、レジ横のメモ（**キャッシュ**）に「りんご 120円」と書いておけば、すぐに答えられます。\n\nただし、メモが古いままだと間違った値段を伝えてしまいます。今回の仕様には、それを防ぐための4つのルールがあります。\n\n---\n\n## ルール1：TTL は60秒\n\n**TTL（Time To Live）＝メモの有効期限**です。メモは書いてから60秒経つと捨て、もう一度台帳を見に行きます。\n\n**例：**\n| 時刻 | 出来事 |\n|---|---|\n| 10:00:00 | 台帳を見て「りんご 120円」とメモ |\n| 10:00:30 | 客に聞かれる → メモを見て「120円」と答える（速い） |\n| 10:01:00 | 60秒経過 → メモを捨てる |\n| 10:01:05 | 客に聞かれる → 台帳を見直して、新しくメモを書く |\n\n👉 **目的：** 古い情報がずっと残り続けるのを防ぎます。\n\n---\n\n## ルール2：更新時には即座に失効\n\n台帳の値段が変わったら、60秒を待たずに**その場でメモを捨てます**。\n\n**例：**\n- 10:00:00 メモ「りんご 120円」\n- 10:00:20 店長が台帳を「150円」に変更 → **すぐにメモを捨てる**\n- 10:00:25 客に聞かれる → メモがないので台帳を見て「150円」と答える\n\n👉 **目的：** 値段が変わったのに、最大60秒も古い値段を答え続ける事態を防ぎます。\n\n---\n\n## ルール3：キャッシュ障害時には元データを読む\n\nメモ帳を失くした・読めないといったトラブルがあっても、「答えられません」とは言わず、**台帳を直接見て答えます**。\n\n**例：**\n- メモ帳を水で濡らして読めない → 台帳を見て「150円」と答える\n\n👉 **目的：** キャッシュはあくまで「速くするための補助」です。キャッシュが壊れてもサービスは止まりません（遅くはなります）。\n\n---\n\n## ルール4：価格を返す前に、必ず元データの更新番号と照合\n\n台帳には、値段を変えるたびに増える**更新番号**（版数）が振ってあります。メモにも、書いたときの番号を一緒に残しておきます。\n\n```\n台帳:   りんご 150円 （更新番号 #8）\nメモ:   りんご 120円 （更新番号 #7）\n```\n\n価格を答える前に番号を比べます。\n- **番号が一致** → メモは最新なので、そのまま答える\n- **番号が不一致** → メモは古いので捨て、台帳の値段を答える\n\n**例：** ルール2の「即座に失効」が何かの理由で失敗し、古いメモが残っていたとします。番号を照合すれば「#7 ≠ #8 だから古い」と気づけるので、間違った値段を答えずに済みます。\n\n👉 **目的：** 他のルールをすり抜けたミスを最後に食い止める**安全装置**です。価格は間違えると実害が出るデータなので、ここまで厳しくしています。\n\n---\n\n## 全体の流れ\n\n```\n価格を聞かれた\n   │\n   ├─ キャッシュが壊れている？ ──Yes──→ 元データを読んで返す\n   │\n   ├─ メモがない／60秒過ぎている？ ──Yes──→ 元データを読み、メモに書いて返す\n   │\n   └─ メモがある\n         │\n         └─ 更新番号は元データと一致？\n               ├─ Yes → メモの価格を返す ✅\n               └─ No  → 元データを読み、メモを書き直して返す\n```\n\n---\n\n## 補足：この設計の注意点\n\n- **照合のコスト：** ルール4のため、毎回元データに「更新番号だけ」は問い合わせることになります。価格本体を読むより軽い処理になるようにしておかないと、キャッシュで速くする効果が薄れます。\n- **障害時の負荷集中：** ルール3により、キャッシュが止まるとすべての問い合わせが元データに向かいます。アクセスが多いシステムでは、元データ側がその負荷に耐えられるか確認が必要です。\n\n**まとめ：** 「速さ」のためにキャッシュを使いつつ、TTL・即時失効・更新番号の照合で「正しさ」を何重にも守り、障害時のフォールバックで「止まらないこと」も確保した設計です。"
+  }
+]
