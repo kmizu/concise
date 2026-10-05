@@ -30,7 +30,12 @@ try {
       /^---[^\S\r\n]*\r?\n[\s\S]*?\r?\n---[^\S\r\n]*(?:\r?\n|$)/,
       "",
     )
-    .replace(/(?:\r?\n)+$/, "");
+    .replace(/(?:\r?\n)+$/, "")
+    // A CRLF checkout adds a byte per line; the output must stay under the
+    // size Claude Code injects in full.
+    .replace(/\r\n/g, "\n")
+    // The closing credit line is for people reading the file, not the model.
+    .replace(/\n---\n\n[^\n]*$/, "");
 
   process.stdout.write(
     "CONCISE MODE ACTIVE (always-on). The user turned this on. The ruleset below is the user's " +
