@@ -1,0 +1,38 @@
+{
+  "cases_file": "cases.json",
+  "cases_sha256": "bf2dcad5b3b6188bb95c40f5e96ab239d547e01b992bb6d6fb2d6c72e08639f8",
+  "collection": {
+    "date": "2026-10-06",
+    "method": "One fresh `claude -p` session per case per condition, run by scripts/collect_claude_answers.py with `--setting-sources \"\" --tools \"\"`. The message was the case context (when present) and prompt; no rubric. Rule conditions loaded the frozen plugin checkout with `--plugin-dir`, so the SessionStart always-on hook injected that version's ruleset exactly as it does for an installed plugin. Each session ran from an empty non-repository directory so no real git state entered the context. No scenario action was executed.",
+    "generator": "Claude Code CLI, default model for the account on 2026-10-06; exact model identity not exposed by the CLI.",
+    "samples_per_case_per_condition": 1,
+    "case_count": 12,
+    "host": "Claude Code headless run, native always-on hook path",
+    "limitations": [
+      "One sample per case per condition; no repeated sampling.",
+      "Claude Code's own system prompt applies in every condition, so no-rules means without concise, not without any instructions.",
+      "Blinded review by a fresh Claude agent from the same model family, not human review.",
+      "No multi-turn execution or mode-persistence test."
+    ]
+  },
+  "conditions": {
+    "no-rules": {
+      "rules_file": null,
+      "rules_sha256": null,
+      "answers_file": "no-rules-answers.json",
+      "reviews_file": "reviews.json"
+    },
+    "current": {
+      "rules_file": "baselines/concise-0.4.0.md",
+      "rules_sha256": "46135491b19aff1af9bce2441947df206a7f3527b98575c3e65545eebd201aa4",
+      "answers_file": "current-answers.json",
+      "reviews_file": "reviews.json"
+    },
+    "revised": {
+      "rules_file": "baselines/concise-0.5.0.md",
+      "rules_sha256": "f8ed3dd98877322eb6d2eee4e0eb683df10266e6bedbf1a19d8235ca51d51503",
+      "answers_file": "revised-answers.json",
+      "reviews_file": "reviews.json"
+    }
+  }
+}

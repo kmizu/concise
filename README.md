@@ -188,8 +188,10 @@ The rules change presentation only, never how much analysis or work gets done. T
 The [response evaluation suite](evals/README.md) compares actual answers with no
 concise rules, version 0.4.0, and version 0.5.0. It reports semantic review and
 character counts separately: a shorter answer that omits necessary information
-does not pass. The [pilot report](evals/PILOT.md) records the results and their
-limits; it is a small scenario study, not proof of improvement across models.
+does not pass. Two pilot reports record the results and their limits: one
+[collected with Codex](evals/PILOT.md) and one
+[collected with Claude Code](evals/claude-code/PILOT.md) through the always-on
+hook. Both are small scenario studies, not proof of improvement across models.
 
 Tests and contribution rules are in [CONTRIBUTING.md](CONTRIBUTING.md).
 

@@ -1,0 +1,222 @@
+{
+  "seed": 20261006,
+  "cases_sha256": "bf2dcad5b3b6188bb95c40f5e96ab239d547e01b992bb6d6fb2d6c72e08639f8",
+  "mapping": [
+    {
+      "case_id": "simple-en",
+      "variant": "response-1",
+      "condition": "revised",
+      "text_sha256": "76d49bc58e8267cf840fcd47aaa9f7222fb98a946ebe5f32009d561d797408c1"
+    },
+    {
+      "case_id": "simple-en",
+      "variant": "response-2",
+      "condition": "no-rules",
+      "text_sha256": "9bbfb12b32989d976d63d881ac28775abd05db1dcae43e6c517d5c8c00342005"
+    },
+    {
+      "case_id": "simple-en",
+      "variant": "response-3",
+      "condition": "current",
+      "text_sha256": "76d49bc58e8267cf840fcd47aaa9f7222fb98a946ebe5f32009d561d797408c1"
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-1",
+      "condition": "no-rules",
+      "text_sha256": "dc30786b40324a1b31d4ec0a745b5895be99d9332b77a64af9848d710d2d1ca1"
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-2",
+      "condition": "current",
+      "text_sha256": "37834f2f25762f23e1f74a531cbe445db73d6765ebe60878a7dfbecd7d4af6e1"
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-3",
+      "condition": "revised",
+      "text_sha256": "37834f2f25762f23e1f74a531cbe445db73d6765ebe60878a7dfbecd7d4af6e1"
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-1",
+      "condition": "revised",
+      "text_sha256": "14f71b5d447340b565e6d396cb7c85ccdc7d2423fe9b679cc2e10df47fb08844"
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-2",
+      "condition": "no-rules",
+      "text_sha256": "43ca9c826cdf2b2afbd73c2d82feb4dc9f4e398d1e121032637314883e7dea58"
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-3",
+      "condition": "current",
+      "text_sha256": "197e2a9c0b6df5b3259ea1ff9cb38157e9581cc90d3439ae0d7e700f7e020dfc"
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-1",
+      "condition": "current",
+      "text_sha256": "1119ef7accc15304f4a1073d26e18ca44651fd3cad7aee2695b337722c3ca429"
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-2",
+      "condition": "no-rules",
+      "text_sha256": "15cf8b9233410a4016b87bbbaf94f06eb759ee1fdabeb1b5d6830ffcc2130785"
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-3",
+      "condition": "revised",
+      "text_sha256": "625b95672bf92c77e7914ca97f407c34696d883298ddc00a2b6bce4628221d11"
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-1",
+      "condition": "current",
+      "text_sha256": "9a611d40311b59177f2487a6d19152646ec8e00c0f0cd896fb8570b720f97a40"
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-2",
+      "condition": "no-rules",
+      "text_sha256": "f0e447837cc171a537d0d63b2cbb8ea979abc26df397acf8259fbecbdb2e87c8"
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-3",
+      "condition": "revised",
+      "text_sha256": "9c3b55bb9cb5157afa3747739005b13a96e11b8c24dd2a1d53519bdb890f8a76"
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-1",
+      "condition": "current",
+      "text_sha256": "5525804b6067b7254a8a80291ccf1e7b25f4674ae69ec997587c0965c2790bf3"
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-2",
+      "condition": "revised",
+      "text_sha256": "99b307935a0b146aa4d0bb0bb94de698217b5c180120c7985dfa2e90b876df1a"
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-3",
+      "condition": "no-rules",
+      "text_sha256": "96e62eec6ce8079b4e33cda4a6362132a2c97929ee546391b0b2bdcc115b1cc1"
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-1",
+      "condition": "current",
+      "text_sha256": "ff83293d4a243ffeaf8ec301ece62c8e985335dbcd31b9b2008ff4871e8568b8"
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-2",
+      "condition": "revised",
+      "text_sha256": "26298d81808325e0349aff13e789f5d578829eef1b783fe83b91c92c6b8a78dc"
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-3",
+      "condition": "no-rules",
+      "text_sha256": "29402bba0d29838af60beb89402d97f27b9a8b49f0bd5b5081a308383333aebb"
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-1",
+      "condition": "revised",
+      "text_sha256": "3c108578db493506e8802de562c2bb78bb71a2d354a8679b9fb20cc70136f229"
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-2",
+      "condition": "current",
+      "text_sha256": "d7e6469f56bdf72d4e17875dbcb1a65a72c46454c219d341944578b9afd2217c"
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-3",
+      "condition": "no-rules",
+      "text_sha256": "c7ad36d7e842d92e6dab440f7d24e08a3de6fd634c5f70d3825d7e058462dd45"
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-1",
+      "condition": "no-rules",
+      "text_sha256": "2ecc61a90f2f2be6c9d5ea215dc1c11ef28cea0e5eaa57aff104b616dcbed7f5"
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-2",
+      "condition": "revised",
+      "text_sha256": "2801fa6af12bbb2c015b4d94ba34320b663ee83da4401e0cccd5d01fb0414cd7"
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-3",
+      "condition": "current",
+      "text_sha256": "e2ac3ef60a0ab23d56259a5df1a97cc862309b2cbfd19e5a0cd3784505227e7e"
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-1",
+      "condition": "revised",
+      "text_sha256": "ec77e88601d3e1fc0089e9a977f21ce283e651d8f3101b1cf117cd9dd369bbb2"
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-2",
+      "condition": "no-rules",
+      "text_sha256": "1d592c686a53d7df347f03afc4e0046c83d03a26c19f402177f40609f52bde24"
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-3",
+      "condition": "current",
+      "text_sha256": "c426ebc713c3933bd082450428f4e044776ae71aad0454573c355315621b0db6"
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-1",
+      "condition": "current",
+      "text_sha256": "bcb77d64df1fc01ed24587aaecc5d5108c89d0f5c9d8fca245e1ef51d78465af"
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-2",
+      "condition": "revised",
+      "text_sha256": "abd5760f931ed4bf48bea18f0eb9b1f49a6f8753afc68bc3a057dcfa2d745fe0"
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-3",
+      "condition": "no-rules",
+      "text_sha256": "72095d2a3d6251578ad3b66d543a9de1a788b2d22b7e3079ad5c618de12c5ab8"
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-1",
+      "condition": "revised",
+      "text_sha256": "30d759e237c3f4d9e39c1d96e52afed987db9ab67782c5ea5a46be479f322603"
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-2",
+      "condition": "current",
+      "text_sha256": "0067eee70de1d99e00780b460e8409f54bf2c040cf42a7d7f17fa8cf1056b1d2"
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-3",
+      "condition": "no-rules",
+      "text_sha256": "1db3f27271f8c3dad020c09d1afd5ca0d594cdf9a152a85bcdceedeb21a29cf1"
+    }
+  ]
+}
