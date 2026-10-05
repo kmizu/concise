@@ -10,14 +10,14 @@
   <sub>A fork of <a href="https://github.com/ayghri/i-have-adhd">i-have-adhd</a>, generalized for anyone who wants concise output.</sub>
 </p>
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/kmizu/concise-plugin?style=flat" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/kmizu/concise?style=flat" alt="License"></a>
   <img src="https://img.shields.io/badge/claude%20code-plugin-0F172A?style=flat" alt="Claude Code plugin">
 </p>
 
 ## Install
 
 ```bash
-claude plugin marketplace add kmizu/concise-plugin
+claude plugin marketplace add kmizu/concise
 claude plugin install concise@concise
 ```
 
