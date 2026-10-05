@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">concise</h1>
 <p align="center">
-  <strong>Structured, concise answers from Claude Code.</strong><br/>
+  <strong>Structured, concise answers from Claude Code and Codex.</strong><br/>
   Answer first. Steps numbered. Nothing to scroll past.
 </p>
 <p align="center">
@@ -12,12 +12,14 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kmizu/concise?style=flat" alt="License"></a>
   <img src="https://img.shields.io/badge/claude%20code-plugin-0F172A?style=flat" alt="Claude Code plugin">
+  <img src="https://img.shields.io/badge/codex-plugin-0F172A?style=flat" alt="Codex plugin">
 </p>
 
-## Install
+[Claude Code users](#claude-code-users) · [Codex users](#codex-users)
 
-For Codex, use the separate [Codex package](codex/README.md). The commands below
-install the Claude Code package.
+## Claude Code users
+
+### Install
 
 ```bash
 claude plugin marketplace add kmizu/concise
@@ -33,7 +35,7 @@ claude plugin marketplace update concise
 claude plugin update concise@concise
 ```
 
-## Commands
+### Commands
 
 | Command | Scope | What it does |
 | --- | --- | --- |
@@ -44,6 +46,68 @@ claude plugin update concise@concise
 | `/concise:status` | | Is always-on enabled, and where the flag file lives |
 
 Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_DIR/.concise-always` if you set one). Installing the plugin writes nothing. `/concise:always-on` writes that one file, `/concise:always-off` deletes it. Saying "stop concise mode" does the same as `/concise:off`.
+
+### How it works
+
+| File | Role |
+| --- | --- |
+| `skills/concise/SKILL.md` | The ruleset, written in a small bracket notation (`[tag attrs]{body}`) so it is short and unambiguous. `/concise` loads it into the session. |
+| `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
+| `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
+| `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
+
+Needs Node.js on `PATH` for the hook and the `always-*` commands. Without it the hook fails silently and `/concise` still works per session.
+
+### Customize
+
+Fork, edit `skills/concise/SKILL.md`, then point Claude Code at your fork:
+
+```bash
+claude plugin uninstall concise
+claude plugin marketplace remove concise
+claude plugin marketplace add <you>/<your-fork>
+claude plugin install concise@concise
+```
+
+Restart Claude Code, then `/concise`.
+
+## Codex users
+
+### Install
+
+Run these commands with a Codex CLI that provides `codex plugin add`
+(tested with Codex CLI 0.160.0). No checkout or build is needed:
+
+```bash
+codex plugin marketplace add kmizu/concise --ref main
+codex plugin add concise@concise-codex
+```
+
+Start a new Codex conversation after installation.
+
+Check installation with:
+
+```bash
+codex plugin list --marketplace concise-codex --json
+```
+
+### Use
+
+| Skill | Scope | What it does |
+| --- | --- | --- |
+| `$concise:concise` | This conversation | Apply the ruleset to every response until you turn it off |
+| `$concise:concise-off` | This conversation | Return to the default response style |
+
+Saying "stop concise mode" or "normal mode" also turns it off. Activation stays
+in conversation context; there are no hooks, persistent settings, or always-on
+controls in the Codex package.
+
+### Package and customization
+
+The separate package is in `codex/concise/`. Its rules are generated from the
+canonical `skills/concise/SKILL.md`, with the off-switch adapted for Codex.
+For desktop installation, local checkouts, ZIP packages, and rebuilding after
+customizing the rules, see the [Codex package guide](codex/README.md).
 
 ## What changes
 
@@ -117,37 +181,13 @@ Ten rules. The full ruleset, with good/bad examples, is in [SKILL.md](skills/con
 9. Errors: location, cause, fix.
 10. Plain words, no filler: no preamble, no recap, no closers, no telegraphic compression.
 
-The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in, and to what Claude writes for you: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. A repository template or convention outranks them. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
-
-## How it works
-
-| File | Role |
-| --- | --- |
-| `skills/concise/SKILL.md` | The ruleset, written in a small bracket notation (`[tag attrs]{body}`) so it is short and unambiguous. `/concise` loads it into the session. |
-| `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
-| `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
-| `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
-
-Needs Node.js on `PATH` for the hook and the `always-*` commands. Without it the hook fails silently and `/concise` still works per session.
-
-## Customize
-
-Fork, edit `skills/concise/SKILL.md`, then point Claude Code at your fork:
-
-```bash
-claude plugin uninstall concise
-claude plugin marketplace remove concise
-claude plugin marketplace add <you>/<your-fork>
-claude plugin install concise@concise
-```
-
-Restart Claude Code, then `/concise`.
+The rules change presentation only, never how much analysis or work gets done. They apply in whatever language you write in, and to what the assistant writes for you: pull request titles and descriptions, commit messages, issues, review comments, status updates, etc. A repository template or convention outranks them. Safety still wins: destructive actions get a confirmation, "explain this" gets a full explanation, real ambiguity gets one question.
 
 Tests and contribution rules are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Acknowledgements
 
-concise is a fork of [i-have-adhd](https://github.com/ayghri/i-have-adhd) by [Ayoub Ghriss](https://github.com/ayghri). The ten rules descend from that work, with thanks. They help any reader, so this fork generalizes them: it is for anyone who wants concise, structured output, whatever the reason. It also narrows the scope to Claude Code and adds the response shape and the command set. For the original, with adapters for a dozen other runtimes and translations in ten languages, use i-have-adhd.
+concise is a fork of [i-have-adhd](https://github.com/ayghri/i-have-adhd) by [Ayoub Ghriss](https://github.com/ayghri). The ten rules descend from that work, with thanks. They help any reader, so this fork generalizes them: it is for anyone who wants concise, structured output, whatever the reason. It provides separate packages for Claude Code and Codex and adds the response shape and activation controls. For the original, with adapters for a dozen other runtimes and translations in ten languages, use i-have-adhd.
 
 ## License
 
