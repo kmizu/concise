@@ -27,6 +27,7 @@ Do not read secrets, home-directory configuration, or local runtime caches. Run 
 - Behavior changes go in `skills/concise/SKILL.md`. Commands and hooks only load or toggle it; they do not restate the rules.
 - Nothing in this repository writes outside the repository except `hooks/always-on-flag.mjs`, and only to the one flag file, and only when the user runs `/concise:always-on`. Keep it that way.
 - Hooks must stay fast, offline, and fail-safe. A broken hook must never block session start.
+- Keep the hook output under 10 KB (`SKILL.md` body plus banner). Above that, Claude Code injects only a 2 KB preview and always-on loses the rules. A test enforces this.
 - Credit to the original project (`i-have-adhd` by Ayoub Ghriss, MIT) stays in `README.md`, `SKILL.md`, and `LICENSE`.
 
 ## Verification

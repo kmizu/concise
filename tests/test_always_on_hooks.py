@@ -79,6 +79,16 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.assertIn("## Rules", result.stdout)
         self.assertNotIn("disable-model-invocation", result.stdout)
 
+    def test_hook_output_stays_under_the_context_limit(self):
+        # Claude Code injects only a 2 KB preview of hook output that is "too
+        # large" (seen at 10.1 KB); the rest goes to a file the model does not
+        # read. Above the limit, always-on silently loses the rules.
+        self.flag.touch()
+        result = self.run_hook()
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("## Pre-send check", result.stdout)
+        self.assertLess(len(result.stdout.encode("utf8")), 10_000)
+
     def test_hook_strips_frontmatter_with_trailing_whitespace(self):
         skill = self.plugin_root / "skills" / "concise" / "SKILL.md"
         skill.write_text("---   \nname: fixture\n--- \t\nFixture body.\n", encoding="utf8")
