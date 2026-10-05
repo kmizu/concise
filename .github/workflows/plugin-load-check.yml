@@ -12,6 +12,11 @@ on:
       - hooks/**
       - skills/**
       - tests/**
+      - codex/**
+      - scripts/**
+      - .agents/plugins/**
+      - LICENSE
+      - logo.svg
       - .github/workflows/plugin-load-check.yml
   push:
     branches: [main]

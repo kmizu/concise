@@ -16,6 +16,9 @@
 
 ## Install
 
+For Codex, use the separate [Codex package](codex/README.md). The commands below
+install the Claude Code package.
+
 ```bash
 claude plugin marketplace add kmizu/concise
 claude plugin install concise@concise

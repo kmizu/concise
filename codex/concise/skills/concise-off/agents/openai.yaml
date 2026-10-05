@@ -1,0 +1,6 @@
+interface:
+  display_name: "Stop concise mode"
+  short_description: "Return to the default response style"
+  default_prompt: "Use $concise:concise-off to stop concise mode."
+policy:
+  allow_implicit_invocation: false

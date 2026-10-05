@@ -1,0 +1,45 @@
+name: package loads in Codex
+
+on:
+  pull_request:
+    paths:
+      - .agents/plugins/**
+      - .claude-plugin/plugin.json
+      - .gitattributes
+      - codex/**
+      - scripts/**
+      - skills/**
+      - tests/**
+      - LICENSE
+      - logo.svg
+      - .github/workflows/codex-package-check.yml
+  push:
+    branches: [main]
+
+jobs:
+  load:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install the tested Codex CLI
+        run: npm install -g @openai/codex@0.160.0
+      - name: Check generated files before rebuilding
+        run: python scripts/build_codex.py --check
+      - name: Run unit tests and native load check in scratch config
+        run: python -m unittest discover -s tests -v
+      - name: Build the standalone ZIP
+        run: python scripts/build_codex.py
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: concise-codex
+          path: dist/concise-codex-*.zip

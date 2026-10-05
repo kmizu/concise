@@ -1,0 +1,2 @@
+# Generated packages must keep stable bytes across Windows and Unix checkouts.
+codex/concise/** text eol=lf
