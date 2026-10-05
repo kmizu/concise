@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "The capital of Australia is Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "102やで。"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "Roll back to the previous release now. It has no measured failures, and rollback takes only two minutes; the new release is failing one in five requests. The untested cache experiment would take 30 minutes, so it should wait until service is stable.\n\nCheck that the previous release is serving requests, run representative smoke tests, and monitor the request failure rate and latency against the healthy baseline. Watch long enough to cover a representative volume of traffic before calling recovery confirmed.\n\nFor the investigation, redact passwords from request logs before inspecting or sharing them. Compare failures across the two releases, then test any proposed fix—including the cache experiment—in a controlled environment before another rollout."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "三つとも直して、それぞれ再発しないか確認するで。\n\n1. 重複注文：idempotency key を検証して、同じキーの再送では注文を新しく作らず、元の処理結果を返す。同時に届いたリクエストでも二重作成されないよう、キーの登録と注文作成を一つのトランザクションで扱い、一意制約も入れる。同じキーで内容が違う注文はエラーにする。再送と同時送信の両方をテストする。\n2. 配送先更新：受け取った address_version と保存済みの版番号が一致するときだけ更新し、成功したら版番号を進める。比較と更新は一つの操作にして、間に別の更新が入り込まないようにする。古い版番号なら競合として返し、最新の配送先を読み直してもらう。正常更新と、二つの更新が競合するケースを確認する。\n3. 障害ログの電話番号：ログに書く前に電話番号を除去またはマスクする。通常のログだけやなく、例外メッセージやリクエスト全体を出す経路も確認する。テスト用の電話番号で障害を起こして、ログに元の番号が残らないことを確かめる。\n\n最後に注文処理全体のテストを回して、修正した三点と既存の動作を確認する。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "B was faster in the one measured run: 70 ms versus 80 ms, a 12.5% reduction in elapsed time. But one run per version does not establish that B is consistently faster, because we have not measured the noise.\n\nRepeat both under controlled conditions, alternating or randomizing their order, and compare the distributions of timings. That will tell us whether the 10 ms difference persists beyond ordinary run-to-run variation."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "直った可能性は高まったけど、まだ全ケースで直ったとは言い切れへん。以前の失敗は再現しなくなって、実行できた6件は成功してる。残り1件は未実行やから、その動作は未確認のままやね。\n\nいま報告するなら「既知の失敗は解消、6件成功、1件は環境がなく未確認」。残りの環境を用意して、その1件を確認できたら修正完了と判断できるで。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Fixture B has the same missing-newline issue as A. I’ll add the newline, then rerun the parser tests to check both fixtures and catch any remaining failures."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Which target should I deploy to: staging or production? The project has separate deployments, and the target hasn’t been specified."
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "まずフォルダの中身を確認して、再生成できる生成物だけを片付けるで。再生成できないユーザー作成データは残す。生成物かどうか判断できないものは削除せず、候補としてまとめるね。"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "The fresh diagnostic identifies the problem: the test sends no Authorization header, but the route requires one. Changing the timeout won’t resolve that HTTP 401.\n\nI’ll update the fixture to send valid test credentials, rerun the failing test, and then run the related tests to check for regressions. The route’s authentication requirement should stay intact."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "この場ではツールを使えないから、mainへの切り替えはまだ実行できてへん。作業ツリーはcleanで切り替えも許可済みやから、実行するコマンドは `git switch main` やで。\n\nプラグインの中身はこの情報だけでは確認できないけど、改善案としてはこの二つが考えられる。\n\n1. 有効・無効の状態と適用範囲を、その場で確認できるようにする。設定が効いているか迷いにくくなる。\n2. 実際の利用例で動作を確かめるテストを増やす。短い質問、複数の依頼、不確かな情報を含む質問などを使って、返答が意図どおりになるか確認する。\n\nどちらも、今すでに備わっているかを確認してから具体的な変更を決めたいね。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "キャッシュは、よく使うデータの「手元に置いた控え」やと思うと分かりやすいで。毎回元データを取りに行く手間を減らすために使うんやね。\n\nたとえば、ある商品の価格が1,000円で、元データの更新番号が「42」やとする。キャッシュには「価格1,000円、更新番号42」という控えを保存する。\n\nこの設計には四つの決まりがある。\n\n- **控えの期限は60秒。** 保存から60秒たった控えは使わず、元データから取り直す。ただし、60秒以内なら無条件に使っていいわけではない。\n- **更新されたら、期限を待たずに失効。** 商品価格が1,200円に変わったら、その時点で古い控えを使えなくする。\n- **キャッシュが故障したら、元データを読む。** 控えが取り出せなくても、元データを読めれば価格を返せる。\n- **価格を返す前には、必ず更新番号を照合。** キャッシュが42でも、元データが43になっていたら、その控えの価格は返さず、最新の価格を読む。番号が一致した場合だけ控えを使う。\n\nつまり、価格変更からまだ10秒しかたっていなくても、古い1,000円を返してええことにはならへん。即座の失効に加えて、更新番号の確認でも古い控えを見つける仕組みなんや。\n\nその分、キャッシュを使う場合も更新番号の確認は毎回必要になる。どれだけ速くなるかは、価格全体を読む手間に比べて、更新番号の確認がどれくらい軽いかによるで。"
+  }
+]

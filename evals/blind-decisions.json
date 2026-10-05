@@ -1,0 +1,330 @@
+{
+  "reviewer": "Independent Codex agent /root/blind_response_review, condition labels hidden; same inherited session model family, not human review",
+  "review_input_sha256": "fafb58cb5c1f123cb7176ec56303f74e7f2db06b10dcdaa30ad91d46c23980b9",
+  "reviews": [
+    {
+      "case_id": "simple-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Answers Canberra directly with no clarification or irrelevant history."
+    },
+    {
+      "case_id": "simple-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "States that Australia's capital is Canberra; answers the whole question directly."
+    },
+    {
+      "case_id": "simple-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Answers Canberra directly without adding irrelevant material."
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Gives the correct product, 102, directly in Japanese."
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Gives 102 directly; no clarification is needed or requested."
+    },
+    {
+      "case_id": "simple-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "The bare answer 102 correctly and completely resolves the multiplication."
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Leads with authorized rollback, compares its 2 minutes and healthy previous release with the untested 30-minute experiment, checks success/failure rates under comparable traffic, and requires password redaction. Explicitly says recovery is not verified yet."
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Recommends rollback first, explains the measured failure rate and experiment delay, monitors failure rate against the healthy baseline over representative traffic, and retains password redaction before log inspection or sharing."
+    },
+    {
+      "case_id": "complex-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": false,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Correctly prioritizes rollback and preserves password redaction, but 'check that requests succeed' does not specify checking the post-rollback error rate; successful requests alone would not establish that the 20% failure problem is resolved."
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Addresses key validation, version comparison, and phone-number masking, with replay/concurrent-request tests, current/stale-version tests, and a log-output check. Describes next work rather than claiming execution."
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Covers all three fixes, including atomic duplicate prevention and version updates, and supplies replay/concurrency, update-conflict, and fault-log verification. Proposed implementation details are framed as planned fixes."
+    },
+    {
+      "case_id": "complex-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Explicitly covers all three defects and gives corresponding tests for replay/invalid keys, current/stale address versions, and phone-number-free fault output; states that fixes and tests have not run."
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": false,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "'Yes, in this run' is qualified immediately and accurately contrasts 70 ms with 80 ms while withholding consistent-improvement confirmation. It omits the rubric's useful next measurement, such as repeated controlled runs."
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Separates the single observed 70-versus-80-ms result from consistent performance, correctly calculates the 12.5% elapsed-time reduction, and proposes repeated controlled runs with alternating/randomized order and timing distributions."
+    },
+    {
+      "case_id": "uncertain-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Reports the observed 10-ms difference, expressly says repeatability is unverified because noise is unmeasured, and proposes repeated same-load runs with distribution comparison."
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Denies confirmation of a complete fix rather than denying observed progress: six of seven succeeded, the old failure no longer reproduces, and one remains unexecuted for lack of an environment."
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "States that the prior failure no longer reproduces while clearly retaining the six-success/one-unexecuted limitation, then identifies obtaining the environment and running the remaining case as next work."
+    },
+    {
+      "case_id": "uncertain-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Keeps the incomplete-verification limitation in the lead, explains six executed successes and the missing environment for the seventh, and proposes checking the remaining case before declaring completion."
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": false,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Fixture A's correction is supported by the snapshot, and B's newline addition is correctly presented as next work without approval. The response omits the requested subsequent test verification."
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Reports the supported correction of A, presents B's newline addition as the next action, and explicitly includes rerunning tests without an approval request."
+    },
+    {
+      "case_id": "authorized-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Identifies B's matching newline issue and commits to adding the newline followed by parser tests for both fixtures and remaining failures; does not claim B is already fixed."
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Asks exactly the necessary staging-versus-production question and makes no target assumption or deployment claim."
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "The focused staging-versus-production question addresses the consequential unresolved target and does not claim execution."
+    },
+    {
+      "case_id": "blocking-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Asks which of the two deployment targets is intended and explains that no target was specified. This is a genuine blocking clarification."
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Preserves irreplaceable user data, first identifies the folder contents, and limits cleanup to regenerable artifacts while retaining unidentified items as candidates. Makes no deletion claim."
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Explicitly preserves user data and limits organization to generated artifacts after identification; also states that deletion has not occurred."
+    },
+    {
+      "case_id": "destructive-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Explicitly preserves irreplaceable user data and asks whether cleanup should mean deleting only generated artifacts. In this mixed-data folder, that is a focused clarification of destructive cleanup scope; it claims no deletion."
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Uses the supplied missing-Authorization diagnosis, explains why timeout changes cannot resolve HTTP 401, and gives the authorized fixture correction and test rerun as next work."
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Changes the diagnosis to the missing required header, plans valid fixture credentials and failing/related test reruns, and preserves the route's authentication requirement without claiming execution."
+    },
+    {
+      "case_id": "repeated-failure-en",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": false,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Correctly identifies the missing Authorization header and abandons timeout changes; 'Done' refers only to diagnosis. It omits rerunning the test or another verification step after the fixture correction."
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Provides git switch main while clearly stating it is unexecuted, and answers the second topic with two concrete improvements: examples of proceeding on authorized work and coverage of every requested topic."
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "States that feature remains current and the tree is clean, explicitly presents switching to main as next work, and supplies two concrete improvements involving uncertainty examples and authorization/target-clarification examples."
+    },
+    {
+      "case_id": "two-part-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Clearly leaves the authorized branch switch unexecuted and supplies its command. Gives two concrete proposed improvements, status/scope visibility and scenario-based tests, while acknowledging that existing plugin features were not inspected."
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-1",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Uses a 1,000-yen/version-7 to 1,200-yen/version-8 example to explain the 60-second TTL, immediate invalidation, version comparison before returning a price, and source fallback on cache failure. Does not assert measured speed or unconditional availability."
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-2",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "The memo analogy and price/version examples cover all four supplied behaviors. The discussion of catching an invalidation that has not yet taken effect is a hypothetical reason for the version check, and source fallback is framed as protection from cache failure alone."
+    },
+    {
+      "case_id": "explain-ja",
+      "variant": "response-3",
+      "accurate": true,
+      "complete": true,
+      "readable": true,
+      "unnecessary_question": false,
+      "evidence": "Explains every condition through a price/version example, makes clear that a fresh TTL does not bypass version checking, and conditions fallback on the source remaining readable. Speed is explicitly dependent on the cost of version checking."
+    }
+  ]
+}
