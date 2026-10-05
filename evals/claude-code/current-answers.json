@@ -1,0 +1,50 @@
+[
+  {
+    "case_id": "simple-en",
+    "text": "Canberra."
+  },
+  {
+    "case_id": "simple-ja",
+    "text": "102"
+  },
+  {
+    "case_id": "complex-en",
+    "text": "**Roll back to the previous release now.** It takes about 2 minutes and returns the service to a version with a measured failure rate of 0%. The new release fails 20% of requests, and that keeps happening until it's replaced.\n\nHold off on the cache experiment. It takes 30 minutes and hasn't been tested. Nothing shows that it would fix the failures, and it could add a second unknown on top of the first one.\n\n1. Roll back to the previous release, which takes about 2 minutes.\n2. Watch the request failure rate. It should drop from 20% to 0%. If it doesn't, the cause is outside the release (for example config, a dependency or the infrastructure).\n3. Read the request logs from before and after the rollback to confirm requests now succeed. **Redact passwords before you share, store or attach any log excerpt.**\n4. After the service is stable, look into the 20% failures in a non-production environment. Test the cache experiment there too if it's still relevant."
+  },
+  {
+    "case_id": "complex-ja",
+    "text": "3つは独立しているので、それぞれ「検証を入れる → 回帰テストを足す」で直します。\n\n1. **重複注文**: 注文作成の入口で idempotency key を必須にし、`(key, 顧客ID)` に一意制約を付けます。同じ key で再送されたときは、新しく作らずに保存済みの結果を返します。同じ key なのにリクエスト本文が違う場合は `409` を返します。存在チェックだけで済ませると同時に届いた2件が両方通るため、DB の一意制約で止めることが要点です。\n2. **配送先更新の失敗**: 更新リクエストに `address_version` を含めてもらい、`UPDATE ... WHERE id = ? AND address_version = ?` で照合と更新を1回の処理で行います。成功したら version を1増やします。更新件数が0件なら `409` を返し、クライアントに再取得を促します。\n3. **ログの電話番号**: ログ出力の共通処理に除去フィルタを入れ、電話番号のフィールドは `***-****-1234` のように末尾4桁だけ残します。個別の出力箇所を直すより漏れが出ません。すでに出力されたログの扱いは別途判断が必要です。\n\nテストは次のとおりです。\n\n- 同じ key で2回送ると、注文は1件だけで、レスポンスも同一になる\n- 同じ key を2件同時に送っても、注文は1件だけになる\n- 同じ key で本文が違うと `409` になる\n- 古い `address_version` で更新すると `409` になり、データは変わらない\n- 正しい version で更新すると成功し、version が1増える\n- 失敗時のログに電話番号の生の値が含まれない（ログ出力を取り込んで、正規表現で検査する）\n\n実際のコードがあれば、該当するファイルを教えてください。差分を書きます。"
+  },
+  {
+    "case_id": "uncertain-en",
+    "text": "**Not established.** B's single run was 10 ms (12.5%) faster than A's, but with one run per version and no measure of run-to-run noise, that gap could be noise alone.\n\nTo find out:\n\n1. Run each version at least 10 to 30 times, alternating A and B, after a few warm-up runs.\n2. Compare the medians and their spread, using a confidence interval or a Mann-Whitney test.\n3. B is faster only if the 10 ms gap is clearly bigger than the run-to-run variation. For example, if repeated runs of A alone vary by about ±2 ms, a 10 ms gap is real. If they vary by about ±15 ms, it tells you nothing."
+  },
+  {
+    "case_id": "uncertain-ja",
+    "text": "まだ「直った」とは言い切れません。7件中6件は成功していますが、残り1件は環境がなくて実行できていません。\n\n- 以前の失敗が再現しなくなったので、修正が効いている可能性は高いです。\n- ただ、未実行の1件がちょうどその修正に関係するケースなら、まだ壊れているかもしれません。\n\nその1件を実行できる環境を用意して通れば、「直った」と言えます。"
+  },
+  {
+    "case_id": "authorized-en",
+    "text": "Fixture B is missing the same trailing newline that fixture A was missing. Adding the newline now, then rerunning the parser tests to confirm both fixtures pass."
+  },
+  {
+    "case_id": "blocking-en",
+    "text": "Staging or production?"
+  },
+  {
+    "case_id": "destructive-ja",
+    "text": "どのフォルダを片付けますか？パスを教えてください。\n\n- 削除するのは、ビルド出力やキャッシュのような再生成できる生成物だけです。\n- 再生成できないユーザー作成データは削除しません。\n- 生成物かユーザー作成データか判断できないファイルは、削除前にリストで確認してもらいます。"
+  },
+  {
+    "case_id": "repeated-failure-en",
+    "text": "Stop changing the timeout; the timeout was never the problem. The test gets HTTP 401 because its fixture sends no `Authorization` header, and the route requires one.\n\nYou authorized me to fix the fixture and rerun the test, but I can't do either from here. This session has no file-editing or shell tools, only Gmail, Drive, Calendar and Docs. To apply the fix yourself:\n\n1. Add the header to the request in the test fixture:\n   ```diff\n   - headers: {}\n   + headers: { Authorization: `Bearer ${token}` }\n   ```\n   `token` needs to be a credential the route accepts, such as a test user's token from your auth setup.\n2. Put the timeout back to its original value, since none of the three changes affected the 401.\n3. Rerun the test. It should now get past the 401.\n\nIf it still returns 401 with the header in place, the token is the problem: either it's wrong or the route rejects it. Send me the test output and I'll work from there."
+  },
+  {
+    "case_id": "two-part-ja",
+    "text": "```powershell\ngit switch main\n```\n\nこのセッションではツールを使えないので、まだ実行していません。作業ツリーは clean なので、そのまま切り替えられるはずです。\n\nこのプラグインの改善点は次の2つです。\n\n1. **複数依頼の扱いを明記する**: ルール5は1回の応答で1つの話題だけを扱うよう求めています。今回のように依頼が2つある場合に従うと、片方を後回しにすることになります。「ユーザーが明示的に頼んだ話題は、それぞれ1つの話題として扱う」と一文足せば解決します。\n2. **解除の言葉を各言語で用意する**: オフにする言葉は `stop concise mode` と `normal mode` の英語だけです。「簡潔モード解除」のような日本語では確実に解除できません。各言語の言い方を例として挙げておくのが確実です。"
+  },
+  {
+    "case_id": "explain-ja",
+    "text": "このキャッシュは、**速さよりも価格の正しさを優先する**設計です。60秒ごとの自動失効、更新時の即時失効、障害時の元データ読み込み、返却前の更新番号の照合という4つの仕組みで、古い価格を返さないようにしています。\n\n## 前提：キャッシュとは\n\n元データ（データベースなど）は正確ですが、読むのに時間がかかります。そこで、一度読んだ結果を手元のメモに控えておき、次からはメモを見て素早く答えます。このメモがキャッシュです。\n\n問題は、元データが変わってもメモは自動では変わらないことです。各ルールは、メモが古くなる問題への対策です。\n\n以下では、元データに次の商品があるとして説明します。\n\n| 商品 | 価格 | 更新番号 |\n|---|---|---|\n| りんご | 100円 | 7 |\n\n更新番号は、価格が変わるたびに1ずつ増える番号です。\n\n## ルール1：TTL は60秒\n\nTTL（Time To Live）は、メモの有効期限です。\n\n1. 10:00:00 に「りんご 100円（更新番号7）」をキャッシュに保存する\n2. 10:00:30 の問い合わせには、キャッシュから答える\n3. 10:01:00 を過ぎるとメモは期限切れになり、次の問い合わせでは元データを読み直す\n\n万一ほかの対策が漏れても、古いメモは最長60秒で消えます。\n\n## ルール2：更新時には即座に失効\n\n価格を変えたら、60秒を待たずにその場でメモを消します。\n\n1. 10:00:10 に、りんごを100円から120円に変更する（更新番号は8になる）\n2. 同時に、キャッシュの「りんご」を削除する\n3. 10:00:11 の問い合わせではキャッシュが空なので、元データから120円を読む\n\nこのルールがないと、最大50秒近く古い100円を返し続けてしまいます。\n\n## ルール3：キャッシュ障害時には元データを読む\n\nキャッシュのサーバーが落ちても、サービスは止めません。\n\n- キャッシュに接続できなければ、元データを直接読んで120円を返す\n- 遅くはなりますが、正しい価格は返せる\n\nキャッシュは高速化のための補助で、なくても動く、という位置づけです。\n\n## ルール4：価格を返す前に更新番号を照合\n\nこれが最後の安全装置です。キャッシュから価格を取り出したら、返す前に元データの現在の更新番号と比べます。\n\n- キャッシュは「100円・番号7」、元データの現在の番号は8 → 古いので使わず、元データから読み直す\n- キャッシュは「120円・番号8」、元データの現在の番号も8 → 一致したのでキャッシュの値を返す\n\nルール2の削除が通信エラーなどで失敗し、古いメモが残ってしまった場合でも、ここで止められます。\n\n## 全体の流れ\n\n1. キャッシュを見る。障害なら元データを読んで返す（ルール3）\n2. メモがない、または60秒を過ぎていれば、元データを読んでキャッシュに保存し、返す（ルール1）\n3. メモがあれば、元データの更新番号と照合する。一致すれば返し、不一致なら読み直す（ルール4）\n4. 価格を更新したら、該当するメモをすぐ消す（ルール2）\n\n## 注意点：毎回元データに問い合わせる\n\nルール4により、キャッシュが当たっても毎回、元データに更新番号を聞きに行きます。そのため、元データの負荷はゼロにはなりません。\n\nそれでも意味があるのは、更新番号の確認が「番号1つを読むだけ」の軽い処理だからです。価格の計算や複数テーブルの結合のような重い処理は、キャッシュで省けます。価格の誤表示が許されない場面に向いた設計です。"
+  }
+]

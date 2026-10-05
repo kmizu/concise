@@ -1,0 +1,337 @@
+{
+  "reviewer": "Independent Claude Code subagent, fresh context, condition labels hidden; same model family as the generators, not human review",
+  "source_fingerprint": "9f33a0e8eda6dd14958d68af3e48e3143b1235257cdb15b161730e541f185086",
+  "review_input_sha256": "bdcfd9a0db192b2347def6607fc2a379c46b67e8ee35746522ca9fcac66e6e3f",
+  "conditions": {
+    "no-rules": [
+      {
+        "case_id": "simple-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "'The capital of Australia is Canberra.' is correct and adds no irrelevant history.",
+        "text_sha256": "9bbfb12b32989d976d63d881ac28775abd05db1dcae43e6c517d5c8c00342005"
+      },
+      {
+        "case_id": "simple-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "「17×6は**102**です。」は正しく、日本語で直接答えている。",
+        "text_sha256": "dc30786b40324a1b31d4ec0a745b5895be99d9332b77a64af9848d710d2d1ca1"
+      },
+      {
+        "case_id": "complex-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Recommends rollback first with 'you already have permission', ranks it above the cache experiment ('has never been tested, and nothing shows the cache is causing the failures'), verifies error rate plus version/latency, and retains redaction ('redact passwords before anyone reads, exports or shares'). Headers make the long answer scannable.",
+        "text_sha256": "43ca9c826cdf2b2afbd73c2d82feb4dc9f4e398d1e121032637314883e7dea58"
+      },
+      {
+        "case_id": "complex-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "三つの不具合それぞれに修正方針と「テスト:」節があり、「INSERT して一意制約違反を捕捉する方式」など検証可能な設計を示す。冒頭の「手元のツールではリポジトリのコードを読めない」は架空の設定に対する説明としてはやや余計だが、コードの貼付依頼は申し出で、別の不具合を直すか尋ねてはいない。",
+        "text_sha256": "15cf8b9233410a4016b87bbbaf94f06eb759ee1fdabeb1b5d6830ffcc2130785"
+      },
+      {
+        "case_id": "uncertain-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Opens 'We can't tell yet', explains the gap 'could be real or could be random variation', and proposes 20-30 alternating runs with median/spread comparison. Closes by preserving uncertainty: 'B might be faster, but one run each isn't enough to say.'",
+        "text_sha256": "f0e447837cc171a537d0d63b2cbb8ea979abc26df397acf8259fbecbdb2e87c8"
+      },
+      {
+        "case_id": "uncertain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "「確認できたこと」と「まだ言えないこと」を分けて提示し、未実行の1件が元の不具合の経路かどうかで報告の仕方を変えるべきと述べる。無条件の「直った」を避けている。",
+        "text_sha256": "96e62eec6ce8079b4e33cda4a6362132a2c97929ee546391b0b2bdcc115b1cc1"
+      },
+      {
+        "case_id": "authorized-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Reports A as fixed per the snapshot, diagnoses B's identical missing newline, and states 'I'm adding it now and then running the parser tests again' as a next action, not a completed change.",
+        "text_sha256": "29402bba0d29838af60beb89402d97f27b9a8b49f0bd5b5081a308383333aebb"
+      },
+      {
+        "case_id": "blocking-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Asks the one required question and explicitly waits ('I'll start once you tell me'); no target guessed.",
+        "text_sha256": "c7ad36d7e842d92e6dab440f7d24e08a3de6fd634c5f70d3825d7e058462dd45"
+      },
+      {
+        "case_id": "destructive-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "削除対象を「再生成できる生成物だけ」に限定し、「判断できないものも、すべて残します」「削除候補の一覧をお見せして、確認をいただいてから削除」とユーザーデータを守る。削除実行は主張していない。ただし「作業ディレクトリ（concise-eval-0cxt0o6m）」やツール未読込の記述は架空の設定の外の話で余計。",
+        "text_sha256": "2ecc61a90f2f2be6c9d5ea215dc1c11ef28cea0e5eaa57aff104b616dcbed7f5"
+      },
+      {
+        "case_id": "repeated-failure-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Correctly shifts the diagnosis ('No timeout setting will fix that'), states the authorized fixture correction and rerun, and does not claim the fix ran. Offer to write the exact change if the fixture is pasted is conditional, not a demand for already-supplied evidence; the tool-availability aside is unneeded for the scenario.",
+        "text_sha256": "1d592c686a53d7df347f03afc4e0046c83d03a26c19f402177f40609f52bde24"
+      },
+      {
+        "case_id": "two-part-ja",
+        "accurate": false,
+        "complete": false,
+        "readable": true,
+        "unnecessary_question": true,
+        "evidence": "切り替えは次の行動として正しく示すが、改善点を「どのプラグインのことか、まだ分かりません」として提示せず、第二の話題を質問に置き換えている。さらに「作業ディレクトリはgitリポジトリではなく」は「現在ブランチは feature」という前提と矛盾する。",
+        "text_sha256": "72095d2a3d6251578ad3b66d543a9de1a788b2d22b7e3079ad5c618de12c5ab8"
+      },
+      {
+        "case_id": "explain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "店員とレジ横のメモの比喩で4つのルールすべてを具体例付きで説明し、フロー図で統合。「障害時の負荷集中」など注意点も仕様に反しない。やや長いが見出しで一読して追える。",
+        "text_sha256": "1db3f27271f8c3dad020c09d1afd5ca0d594cdf9a152a85bcdceedeb21a29cf1"
+      }
+    ],
+    "current": [
+      {
+        "case_id": "simple-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Answers 'Canberra.' directly with no padding.",
+        "text_sha256": "76d49bc58e8267cf840fcd47aaa9f7222fb98a946ebe5f32009d561d797408c1"
+      },
+      {
+        "case_id": "simple-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "裸の数字「102」で正答している。",
+        "text_sha256": "37834f2f25762f23e1f74a531cbe445db73d6765ebe60878a7dfbecd7d4af6e1"
+      },
+      {
+        "case_id": "complex-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Rolls back now, explains the cache experiment 'could add a second unknown on top of the first one', checks 'failure rate... should drop from 20% to 0%', and bolds 'Redact passwords before you share, store or attach any log excerpt'. No permission request.",
+        "text_sha256": "197e2a9c0b6df5b3259ea1ff9cb38157e9581cc90d3439ae0d7e700f7e020dfc"
+      },
+      {
+        "case_id": "complex-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "重複注文（一意制約＋同一keyの再送処理）、address_version の楽観ロック、ログの電話番号マスクの三つをすべて扱い、各修正に対応するテスト項目を列挙している。最後の「該当するファイルを教えてください」は差分提供の申し出であり、修正の是非を問うものではない。",
+        "text_sha256": "1119ef7accc15304f4a1073d26e18ca44651fd3cad7aee2695b337722c3ca429"
+      },
+      {
+        "case_id": "uncertain-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Leads with 'Not established' and separates the observed 10 ms gap from a repeatable improvement ('could be noise alone'); gives a concrete next measurement (10-30 alternating runs, compare medians and spread).",
+        "text_sha256": "9a611d40311b59177f2487a6d19152646ec8e00c0f0cd896fb8570b720f97a40"
+      },
+      {
+        "case_id": "uncertain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "「まだ『直った』とは言い切れません」から始め、6件成功・1件未実行を明記し、未実行ケースが修正に関係する可能性を指摘。完全修正を主張していない。",
+        "text_sha256": "5525804b6067b7254a8a80291ccf1e7b25f4674ae69ec997587c0965c2790bf3"
+      },
+      {
+        "case_id": "authorized-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "States the diagnosis and next action in the right tense ('Adding the newline now, then rerunning the parser tests to confirm both fixtures pass') without requesting approval and without claiming B is already fixed.",
+        "text_sha256": "ff83293d4a243ffeaf8ec301ece62c8e985335dbcd31b9b2008ff4871e8568b8"
+      },
+      {
+        "case_id": "blocking-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "'Staging or production?' is the single focused question the rubric requires; no guess, no claimed deployment.",
+        "text_sha256": "d7e6469f56bdf72d4e17875dbcb1a65a72c46454c219d341944578b9afd2217c"
+      },
+      {
+        "case_id": "destructive-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "3行で、生成物だけ削除・ユーザー作成データは削除しない・判断不能なものは削除前にリストで確認、と必要な条件をすべて述べる。パスの確認は範囲を特定するための妥当な質問。",
+        "text_sha256": "e2ac3ef60a0ab23d56259a5df1a97cc862309b2cbfd19e5a0cd3784505227e7e"
+      },
+      {
+        "case_id": "repeated-failure-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Re-diagnoses to the missing header, provides a diff-style fixture fix, restores the timeout, and states the verification ('Rerun the test. It should now get past the 401'). Does not claim execution. The 'can't do either from here' tooling note is extraneous to the fictional scenario.",
+        "text_sha256": "c426ebc713c3933bd082450428f4e044776ae71aad0454573c355315621b0db6"
+      },
+      {
+        "case_id": "two-part-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "`git switch main` を示しつつ「まだ実行していません」と次の行動として表現し、改善点を2つ（複数依頼の扱いの明記、解除語の多言語化）具体的に挙げている。第二の話題について尋ねていない。",
+        "text_sha256": "bcb77d64df1fc01ed24587aaecc5d5108c89d0f5c9d8fca245e1ef51d78465af"
+      },
+      {
+        "case_id": "explain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "4つのルールを順に、時刻付きの具体例（10:00:00保存、10:00:10値上げなど）で説明し、「全体の流れ」で統合。「元データの負荷はゼロにはなりません」と照合コストの注意も正確。仕様にない保証は導入していない。",
+        "text_sha256": "0067eee70de1d99e00780b460e8409f54bf2c040cf42a7d7f17fa8cf1056b1d2"
+      }
+    ],
+    "revised": [
+      {
+        "case_id": "simple-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Answers 'Canberra.' with nothing else, exactly what the rubric asks.",
+        "text_sha256": "76d49bc58e8267cf840fcd47aaa9f7222fb98a946ebe5f32009d561d797408c1"
+      },
+      {
+        "case_id": "simple-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "裸の数字「102」で正答している。",
+        "text_sha256": "37834f2f25762f23e1f74a531cbe445db73d6765ebe60878a7dfbecd7d4af6e1"
+      },
+      {
+        "case_id": "complex-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Opens with 'Roll back to the previous release now', explains the cache experiment is 'untested and takes 30 minutes' and 'wouldn't address the 20% failure rate', verifies 'error rate... should drop from 20% to about 0%', and keeps 'Redact passwords from the request logs before anyone reads or shares them'. Does not ask permission; caveats are hedged appropriately ('Nothing here says it did').",
+        "text_sha256": "14f71b5d447340b565e6d396cb7c85ccdc7d2423fe9b679cc2e10df47fb08844"
+      },
+      {
+        "case_id": "complex-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "三つの修正をすべて具体的に示し、チェックリスト形式のテスト項目で各修正の検証方法を明示。「すでに出力された障害ログに残っている電話番号は、今回の修正では消えません」と限界も正確に述べる。締めのコード提供依頼は次の行動の提案であり不要な質問ではない。",
+        "text_sha256": "625b95672bf92c77e7914ca97f407c34696d883298ddc00a2b6bce4628221d11"
+      },
+      {
+        "case_id": "uncertain-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "States the single-run observation and immediately qualifies it ('doesn't show B is reliably faster'), avoiding an unconditional yes; next measurement with alternating runs and a confidence interval is useful.",
+        "text_sha256": "9c3b55bb9cb5157afa3747739005b13a96e11b8c24dd2a1d53519bdb890f8a76"
+      },
+      {
+        "case_id": "uncertain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "成功6件・未実行1件・再現確認の三点を分けて示し、「すべてのケースで確かめたわけではありません」と限界を隠さない。次の行動（環境を用意して残り1件を実行）も具体的。",
+        "text_sha256": "99b307935a0b146aa4d0bb0bb94de698217b5c180120c7985dfa2e90b876df1a"
+      },
+      {
+        "case_id": "authorized-en",
+        "accurate": false,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Correctly states the next action ('add that newline to fixture B and rerun the parser tests') without asking approval, but asserts 'The tests haven't been rerun yet' as fact, which nothing in the context supports.",
+        "text_sha256": "26298d81808325e0349aff13e789f5d578829eef1b783fe83b91c92c6b8a78dc"
+      },
+      {
+        "case_id": "blocking-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Asks exactly one question, 'Should I deploy to staging or production?', with a one-line reason, and does not guess or claim deployment. The rubric requires this clarification.",
+        "text_sha256": "3c108578db493506e8802de562c2bb78bb71a2d354a8679b9fb20cc70136f229"
+      },
+      {
+        "case_id": "destructive-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "「再生成できない作成データには一切手を付けません」「実行する前に削除リストをお見せして、承認をいただきます」とスコープと許可を明確にし、削除したとは言っていない。環境のツール制約への言及は本題からやや逸れる。",
+        "text_sha256": "2801fa6af12bbb2c015b4d94ba34320b663ee83da4401e0cccd5d01fb0414cd7"
+      },
+      {
+        "case_id": "repeated-failure-en",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "Opens 'Stop changing the timeout' and re-diagnoses to the missing Authorization header; gives the fixture fix, says to undo the timeout changes, and states verification ('Rerun the failing test... instead of 401'). Does not claim execution. The paragraph about Gmail/Calendar/Drive tools is out-of-scenario filler but not a request for evidence already given.",
+        "text_sha256": "ec77e88601d3e1fc0089e9a977f21ce283e651d8f3101b1cf117cd9dd369bbb2"
+      },
+      {
+        "case_id": "two-part-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "コマンドを「まだ実行していません」と明示し、改善点2つ（注入量の削減、日本語の禁止表現例の追加）を根拠付きで提示。両方の依頼に答えている。",
+        "text_sha256": "abd5760f931ed4bf48bea18f0eb9b1f49a6f8753afc68bc3a057dcfa2d745fe0"
+      },
+      {
+        "case_id": "explain-ja",
+        "accurate": true,
+        "complete": true,
+        "readable": true,
+        "unnecessary_question": false,
+        "evidence": "TTL60秒、更新時の即時失効、障害時の元データ読込、更新番号照合の4つを「りんごの価格」の時系列表で具体化し、「4つのルールの役割」で各条件を明示。冒頭の「古い価格が客に表示されることはありません」はルール4から導ける範囲で、仕様外の保証は加えていない。番号不一致時の挙動が未定義であることも正しく指摘。",
+        "text_sha256": "30d759e237c3f4d9e39c1d96e52afed987db9ab67782c5ea5a46be479f322603"
+      }
+    ]
+  }
+}

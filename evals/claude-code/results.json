@@ -1,0 +1,490 @@
+{
+  "collection": {
+    "date": "2026-10-06",
+    "method": "One fresh `claude -p` session per case per condition, run by scripts/collect_claude_answers.py with `--setting-sources \"\" --tools \"\"`. The message was the case context (when present) and prompt; no rubric. Rule conditions loaded the frozen plugin checkout with `--plugin-dir`, so the SessionStart always-on hook injected that version's ruleset exactly as it does for an installed plugin. Each session ran from an empty non-repository directory so no real git state entered the context. No scenario action was executed.",
+    "generator": "Claude Code CLI, default model for the account on 2026-10-06; exact model identity not exposed by the CLI.",
+    "samples_per_case_per_condition": 1,
+    "case_count": 12,
+    "host": "Claude Code headless run, native always-on hook path",
+    "limitations": [
+      "One sample per case per condition; no repeated sampling.",
+      "Claude Code's own system prompt applies in every condition, so no-rules means without concise, not without any instructions.",
+      "Blinded review by a fresh Claude agent from the same model family, not human review.",
+      "No multi-turn execution or mode-persistence test."
+    ]
+  },
+  "conditions": {
+    "no-rules": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 37,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 15,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 1630,
+          "lines": 17,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 1104,
+          "lines": 34,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 710,
+          "lines": 8,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 264,
+          "lines": 8,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 135,
+          "lines": 1,
+          "content_indicators": {
+            "next fix": true,
+            "tests": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 70,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 334,
+          "lines": 8,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 1021,
+          "lines": 9,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 330,
+          "lines": 18,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 1960,
+          "lines": 95,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 7610,
+      "content_indicator_passes": 12,
+      "reviewed": 12,
+      "quality_passes": 11,
+      "quality_failures": [
+        "two-part-ja"
+      ],
+      "unreviewed": []
+    },
+    "current": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 9,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 3,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 966,
+          "lines": 8,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 820,
+          "lines": 16,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 587,
+          "lines": 7,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 172,
+          "lines": 6,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 161,
+          "lines": 1,
+          "content_indicators": {
+            "next fix": true,
+            "tests": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 22,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 139,
+          "lines": 5,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 934,
+          "lines": 14,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 384,
+          "lines": 10,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 1524,
+          "lines": 66,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 5721,
+      "content_indicator_passes": 12,
+      "reviewed": 12,
+      "quality_passes": 12,
+      "quality_failures": [],
+      "unreviewed": []
+    },
+    "revised": {
+      "answers": [
+        {
+          "case_id": "simple-en",
+          "characters": 9,
+          "lines": 1,
+          "content_indicators": {
+            "capital": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "simple-ja",
+          "characters": 3,
+          "lines": 1,
+          "content_indicators": {
+            "result": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": true,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-en",
+          "characters": 1297,
+          "lines": 13,
+          "content_indicators": {
+            "rollback": true,
+            "verify": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "complex-ja",
+          "characters": 1278,
+          "lines": 34,
+          "content_indicators": {
+            "idempotency": true,
+            "address version": true,
+            "redaction": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-en",
+          "characters": 488,
+          "lines": 7,
+          "content_indicators": {
+            "observations": true,
+            "uncertainty": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "uncertain-ja",
+          "characters": 245,
+          "lines": 7,
+          "content_indicators": {
+            "remaining test": true,
+            "observed progress": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "authorized-en",
+          "characters": 224,
+          "lines": 3,
+          "content_indicators": {
+            "next fix": true,
+            "tests": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": false
+        },
+        {
+          "case_id": "blocking-en",
+          "characters": 117,
+          "lines": 1,
+          "content_indicators": {
+            "target question": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "destructive-ja",
+          "characters": 318,
+          "lines": 9,
+          "content_indicators": {
+            "protect user data": true,
+            "confirmation": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "repeated-failure-en",
+          "characters": 1030,
+          "lines": 15,
+          "content_indicators": {
+            "auth evidence": true,
+            "verification": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "two-part-ja",
+          "characters": 374,
+          "lines": 10,
+          "content_indicators": {
+            "switch action": true,
+            "two improvements": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        },
+        {
+          "case_id": "explain-ja",
+          "characters": 1375,
+          "lines": 35,
+          "content_indicators": {
+            "ttl": true,
+            "invalidation": true,
+            "fallback": true,
+            "version check": true
+          },
+          "content_indicators_pass": true,
+          "length_target_pass": null,
+          "quality_pass": true
+        }
+      ],
+      "sample_count": 12,
+      "characters": 6758,
+      "content_indicator_passes": 12,
+      "reviewed": 12,
+      "quality_passes": 11,
+      "quality_failures": [
+        "authorized-en"
+      ],
+      "unreviewed": []
+    }
+  }
+}
