@@ -44,12 +44,16 @@ Always-on is a single empty file, `~/.claude/.concise-always` (`$CLAUDE_CONFIG_D
 
 ## What changes
 
-One real question, asked twice on 2026-10-05 with `claude -p` and no user settings: once without the plugin, once with concise 0.3.1 always-on. Nothing below is edited.
+The same prompt, answered without and with the plugin. Real output from `claude -p` with no user settings, concise 0.3.1 always-on, generated on 2026-10-05. Unedited, one run each.
+
+### A fix
+
+The fix moves to the first line and the reason follows it.
 
 <details>
-<summary>The question</summary>
+<summary>The prompt</summary>
 
-```text
+````text
 My Docker build reinstalls every npm package whenever I change a source file, so each build takes minutes. Why, and how do I fix it? Here is my Dockerfile:
 
 FROM node:22-slim
@@ -58,30 +62,17 @@ COPY . .
 RUN npm ci
 RUN npm run build
 CMD ["node", "dist/server.js"]
-```
+````
 
 </details>
 
-**With concise** (15 lines, 134 words):
-
-Copy `package.json` and `package-lock.json` first, run `npm ci`, and only then copy the rest of the source:
-
-```dockerfile
-FROM node:22-slim
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-CMD ["node", "dist/server.js"]
-```
-
-The cause is Docker's layer cache. Docker reuses a layer only if that step's inputs haven't changed. Right now `COPY . .` comes before `npm ci`, so editing any source file invalidates the cache for that copy and every step after it, including the install. With the new order, `npm ci` reruns only when one of the two package files changes.
-
-Also add a `.dockerignore` that lists `node_modules` and `dist`. Without it, `COPY . .` sends your local `node_modules` into the build context, which slows the build and overwrites the modules you just installed.
-
-<details>
-<summary><strong>Without concise</strong> (54 lines, 282 words)</summary>
+<table>
+<tr>
+<th width="50%">Before (282 words)</th>
+<th width="50%">After (134 words)</th>
+</tr>
+<tr>
+<td valign="top">
 
 **Why it happens:** Docker caches each instruction as a layer. A layer gets reused only if nothing it depends on has changed. `COPY . .` copies your whole project, source files included. So any source edit invalidates that layer, and every layer after it gets rebuilt too, including `RUN npm ci`.
 
@@ -138,19 +129,65 @@ npm-debug.log
 
 The reordering alone should bring rebuilds after a code change down from minutes to roughly the time `npm run build` takes.
 
-</details>
+</td>
+<td valign="top">
 
-The fix moves to the first line, the reason follows it, and three optional extras shrink to one short paragraph. Across three runs each, answers were 209 to 282 words without the plugin and 134 to 148 words with it. That is one prompt and a small sample, so read it as an illustration.
+Copy `package.json` and `package-lock.json` first, run `npm ci`, and only then copy the rest of the source:
 
-## Examples
+```dockerfile
+FROM node:22-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+CMD ["node", "dist/server.js"]
+```
 
-Real answers from concise 0.3.1 always-on, generated on 2026-10-05 with `claude -p` and no user settings. Unedited, one run each.
+The cause is Docker's layer cache. Docker reuses a layer only if that step's inputs haven't changed. Right now `COPY . .` comes before `npm ci`, so editing any source file invalidates the cache for that copy and every step after it, including the install. With the new order, `npm ci` reruns only when one of the two package files changes.
+
+Also add a `.dockerignore` that lists `node_modules` and `dist`. Without it, `COPY . .` sends your local `node_modules` into the build context, which slows the build and overwrites the modules you just installed.
+
+</td>
+</tr>
+</table>
 
 ### A yes/no question
 
-Yes or no comes first, then what you need to act on it.
+Both say "Yes" first. concise stops once you can act on it.
 
 > Can I use top-level await in an ES module on Node 20?
+
+<table>
+<tr>
+<th width="50%">Before (217 words)</th>
+<th width="50%">After (68 words)</th>
+</tr>
+<tr>
+<td valign="top">
+
+Yes. Node has supported top-level `await` in ES modules without a flag since v14.8, so Node 20 handles it fine. The file has to be loaded as an ES module, which means either:
+
+- the file uses the `.mjs` extension, or
+- the nearest `package.json` has `"type": "module"` (and the file is `.js`).
+
+```js
+// index.mjs
+const res = await fetch("https://example.com");
+console.log(res.status);
+```
+
+Some things to watch for:
+
+- **CommonJS doesn't support it.** Using top-level `await` in a `.cjs` file or a CommonJS `.js` file causes a `SyntaxError`. In that case, wrap the code in an async function or switch the file to ESM.
+- **The REPL and `--eval` are different.** The REPL lets you use `await` at the top level. With `node -e`, you need `--input-type=module`.
+- **`require()` of a module that uses it fails.** Node 20.19+ can `require()` ES modules, but not ones that use top-level `await`. Those throw `ERR_REQUIRE_ASYNC_MODULE`, so load them with `import` or `import()` instead.
+- **Imports wait for it.** Any module that imports one using top-level `await` doesn't run until that `await` settles.
+
+Also, Node 20 reached end-of-life in April 2026, so it no longer gets security patches. For anything you'll keep running, it's worth moving to Node 22 or 24 (both LTS). Top-level `await` works the same way on both.
+
+</td>
+<td valign="top">
 
 Yes. Node 20 supports top-level `await` in ES modules without any flag. It has been stable since Node 14.8.
 
@@ -167,11 +204,93 @@ console.log(res.status);
 
 Top-level `await` does not work in CommonJS (`.cjs` files, or `.js` files without `"type": "module"`).
 
+</td>
+</tr>
+</table>
+
 ### A question about options
 
 Options are numbered, recommendation first, so you can reply "2".
 
 > What are my options for running a Python script every hour on a Linux server?
+
+<table>
+<tr>
+<th width="50%">Before (405 words)</th>
+<th width="50%">After (175 words)</th>
+</tr>
+<tr>
+<td valign="top">
+
+Here are the main options, roughly from most to least common.
+
+## 1. cron (simplest)
+```bash
+crontab -e
+```
+```cron
+0 * * * * /usr/bin/python3 /path/to/script.py >> /var/log/myscript.log 2>&1
+```
+- It's on almost every system, and the setup is one line.
+- Use absolute paths. cron runs with a minimal environment and a different `PATH`.
+- If you use a virtualenv, point to its interpreter: `/path/to/venv/bin/python`.
+- Downsides: no logging unless you redirect output yourself, and nothing stops two runs from overlapping. To prevent overlap, wrap the command in `flock -n /tmp/myscript.lock ...`.
+
+## 2. systemd timers (best default on modern distros)
+`/etc/systemd/system/myscript.service`:
+```ini
+[Unit]
+Description=My hourly script
+
+[Service]
+Type=oneshot
+User=myuser
+WorkingDirectory=/path/to
+ExecStart=/path/to/venv/bin/python /path/to/script.py
+```
+`/etc/systemd/system/myscript.timer`:
+```ini
+[Unit]
+Description=Run myscript hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
+```
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now myscript.timer
+systemctl list-timers            # check the schedule
+journalctl -u myscript.service   # view the logs
+```
+- Logging goes to journald automatically, and runs can't overlap because a oneshot service won't start again while it's still running.
+- `Persistent=true` catches up on runs missed while the server was down.
+- You also get resource limits, dependencies, and failure hooks (`OnFailure=`).
+- The trade-off is two files instead of one line.
+
+## 3. A long-running Python process with an internal scheduler
+You can use something like `APScheduler` or `schedule`, or a simple `while True: ...; sleep(3600)` loop, and run it under systemd or supervisor.
+- This makes sense if the job needs shared in-memory state or you already have a daemon running.
+- It drifts over time and dies if the process crashes, so you need a supervisor to restart it.
+
+## 4. Heavier orchestration (only if you need it)
+- **Airflow, Prefect, or Dagster**: for job dependencies, retries, a UI, and history.
+- **Celery beat**: if you already use Celery.
+- **Kubernetes CronJob**: if the server is part of a k8s cluster.
+- **anacron**: for machines that aren't always on. Its finest schedule is daily, so it doesn't fit hourly jobs.
+
+## Recommendation
+- Use a **systemd timer** if this is a real production job. Built-in logging, overlap protection, and catching up on missed runs are worth the two small files.
+- Use **cron** for something quick and personal.
+
+In both cases, make the script safe to run twice, and have it exit with a non-zero code when it fails so the scheduler and logs show the failure.
+
+</td>
+<td valign="top">
 
 1. **cron** (recommended for most cases): built in, one line, nothing else to install. It skips missed runs while the server is down and gives no logging unless you add it.
    ```bash
@@ -185,45 +304,11 @@ Options are numbered, recommendation first, so you can reply "2".
 
 Use absolute paths in cron. Cron runs with a minimal environment, so point it at the virtualenv interpreter directly, for example `/path/to/venv/bin/python`.
 
-### A commit message
+</td>
+</tr>
+</table>
 
-The rules also cover text written for other readers. What it could not confirm is said in one place.
-
-<details>
-<summary>The prompt</summary>
-
-````text
-Write a commit message for this diff.
-
---- a/src/retry.ts
-+++ b/src/retry.ts
-@@ -4,7 +4,8 @@ export async function retry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
-     try {
-       return await fn();
-     } catch (err) {
--      if (i === attempts) throw err;
-+      if (i === attempts - 1) throw err;
-+      await sleep(2 ** i * 100);
-     }
-   }
- }
-````
-
-</details>
-
-```
-Fix retry swallowing the final error and add backoff
-
-The loop counter runs from 0 to attempts - 1, so the check
-`i === attempts` never matched. After the last failed attempt,
-retry() returned undefined instead of throwing the error.
-It now throws on the last attempt (i === attempts - 1).
-
-Failed attempts are now followed by an exponential backoff of
-2^i * 100 ms (100 ms, 200 ms, 400 ms, ...) before the next try.
-```
-
-This assumes the loop is `for (let i = 0; i < attempts; i++)`. The diff doesn't show the loop header, so I haven't confirmed that. It also assumes `sleep` already exists in `src/retry.ts`, because the diff doesn't import it.
+For the first prompt, three runs each gave 209 to 282 words before and 134 to 148 words after. These are single prompts and small samples, so read them as illustrations.
 
 ## The shape
 
