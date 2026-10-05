@@ -76,7 +76,8 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.assertIn("CONCISE MODE ACTIVE (always-on)", result.stdout)
         self.assertIn("/concise:off", result.stdout)
         self.assertIn(str(self.flag), result.stdout)
-        self.assertIn("## Rules", result.stdout)
+        self.assertIn("(rules", result.stdout)
+        self.assertNotIn("Derived from", result.stdout)
         self.assertNotIn("disable-model-invocation", result.stdout)
 
     def test_hook_output_stays_under_the_context_limit(self):
@@ -86,7 +87,7 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.flag.touch()
         result = self.run_hook()
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertIn("## Pre-send check", result.stdout)
+        self.assertIn("(pre-send-check", result.stdout)
         self.assertLess(len(result.stdout.encode("utf8")), 10_000)
 
     def test_hook_strips_frontmatter_with_trailing_whitespace(self):
@@ -143,6 +144,34 @@ class AlwaysOnHookTest(unittest.TestCase):
         self.assertIn("always-on.mjs", hook["command"])
         self.assertIn(".catch", hook["command"])
         self.assertEqual("startup|resume|clear|compact", config["hooks"]["SessionStart"][0]["matcher"])
+
+
+class RulesetSyntaxTest(unittest.TestCase):
+    """skills/concise/SKILL.md holds the ruleset as one balanced S-expression."""
+
+    def test_ruleset_s_expression_is_balanced(self):
+        text = (ROOT / "skills" / "concise" / "SKILL.md").read_text(encoding="utf8")
+        self.assertEqual(1, text.count("```lisp"))
+        code = text.split("```lisp", 1)[1].split("```", 1)[0]
+        depth, in_string, escaped = 0, False, False
+        for char in code:
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    in_string = False
+            elif char == '"':
+                in_string = True
+            elif char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+                self.assertGreaterEqual(depth, 0, "unmatched closing parenthesis")
+        self.assertFalse(in_string, "unterminated string")
+        self.assertEqual(0, depth, "unclosed parenthesis")
+        self.assertEqual(10, code.count("(rule "))
 
 
 if __name__ == "__main__":

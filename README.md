@@ -101,7 +101,7 @@ Inline: code for commands, paths, and identifiers; bold for the one term you sca
 
 ## The rules
 
-Ten rules. Full text with good/bad examples in [SKILL.md](skills/concise/SKILL.md).
+Ten rules. The full ruleset, with good/bad examples, is in [SKILL.md](skills/concise/SKILL.md).
 
 1. Lead with the answer. Yes/no questions get "Yes" or "No" first.
 2. Match length to the question.
@@ -120,7 +120,7 @@ The rules change presentation only, never how much analysis or work gets done. T
 
 | File | Role |
 | --- | --- |
-| `skills/concise/SKILL.md` | The ruleset. `/concise` loads it into the session. |
+| `skills/concise/SKILL.md` | The ruleset, written as an S-expression so it is short and unambiguous. `/concise` loads it into the session. |
 | `hooks/hooks.json`, `hooks/always-on.mjs` | `SessionStart` hook (startup, resume, clear, compact). When the always-on flag exists it re-injects the ruleset, so the mode survives compaction in long sessions. |
 | `commands/*.md` | `/concise:off`, `:always-on`, `:always-off`, `:status`. |
 | `hooks/always-on-flag.mjs` | The only code that creates or deletes the flag file. |
